@@ -2,7 +2,7 @@
 • Aimbot (Triggerbot, Quickscoper, Manual, Hip fire) (Various Ranges)</br>
 • FPS Counter</br>
 • Player Tracers</br>
-• Player ESP (aka. Wall</br>hack) (Full, Box) (Various Colors&Options)</br>
+• Player ESP (aka. Wallhack) (Full, Box) (Various Colors&Options)</br>
 • BHop (Automatic, Manual)</br>
 • Speed Hack</br>
 • No Recoil</br>
