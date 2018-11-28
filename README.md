@@ -18,8 +18,8 @@ U: Change ESP Text Color</br>
 O: Change ESP Line Color</br>
 B: Change Bhop Mode</br>
 Z: Change Scope Zoom</br>
-</br></br>
-<b>Requirements:</b> • Tampermonkey
+</br>
+<b>Requirements:</b> • Tampermonkey</br>
 <a href="https://github.com/MrCoderN/krunker.io-hack-cheat-mod/raw/master/krunkerhack.user.js" target="_blank"><b>Userscript: CLICK HERE</b></a>
 
 <b>* Other Websites & Mods *</b></br>
