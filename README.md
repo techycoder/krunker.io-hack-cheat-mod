@@ -1,4 +1,4 @@
-<h3>Features</h3></br>
+<h3>Features</h3>
 • Aimbot (Triggerbot, Quickscoper, Manual, Hip fire) (Various Ranges)</br>
 • FPS Counter</br>
 • Player Tracers</br>
@@ -11,7 +11,7 @@
 • Auto Aim/Respawn/Reload/Weapon Swap</br>
 • Scope&Zoom for weapons....
 </br></br>
-<h3>Fast Keys</h3></br>
+<h3>Fast Keys</h3>
 T: Change Auto Aim</br>
 Y: Change ESP Style</br>
 U: Change ESP Text Color</br>
