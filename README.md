@@ -1,4 +1,4 @@
-<b>-Features-</b></br>
+<h3>Features</h3></br>
 • Aimbot (Triggerbot, Quickscoper, Manual, Hip fire) (Various Ranges)</br>
 • FPS Counter</br>
 • Player Tracers</br>
@@ -11,7 +11,7 @@
 • Auto Aim/Respawn/Reload/Weapon Swap</br>
 • Scope&Zoom for weapons....
 </br></br>
-<b>-Fast Keys-</b></br>
+<h3>Fast Keys</h3></br>
 T: Change Auto Aim</br>
 Y: Change ESP Style</br>
 U: Change ESP Text Color</br>
@@ -20,7 +20,8 @@ B: Change Bhop Mode</br>
 Z: Change Scope Zoom</br>
 </br>
 <b>Requirements:</b> • Tampermonkey</br>
-<a href="https://github.com/MrCoderN/krunker.io-hack-cheat-mod/raw/master/krunkerhack.user.js" target="_blank"><b>Userscript: CLICK HERE</b></a>
+
+<h2>Userscript: <a href="https://github.com/MrCoderN/krunker.io-hack-cheat-mod/raw/master/krunkerhack.user.js" target="_blank">CLICK HERE</a></h2>
 
 <b>* Other Websites & Mods *</b></br>
 All IO Mods: https://slithere.com</br>
