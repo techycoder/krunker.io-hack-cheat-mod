@@ -1,10 +1,9 @@
 // ==UserScript==
 // @name         Best ★ Krunker.io Hack/Cheat/Mod [UPDATED] ★ UNBLOCKED FREE DOWNLOAD (2018)
-// @version      3.2.1
+// @version      3.2.2
 // @description  NOVEMBER | Krunkerio Cheats -> Aimbot, Wallhack, Speedhack, No Recoil, No Reload, Fire Bot, Zoom IN/Out, Auto Respawn, Auto Reload...
 // @author       MR.Coder
-// @match        *://krunker.io/*
-// @match        *://www.krunker.io/*
+// @include      /^(https?:\/\/)?(www\.)?krunker\.io(|\/|\/\?server=.+)$/
 // @grant        GM_xmlhttpRequest
 // @connect      krunker.io
 // @namespace    MR.Coder
@@ -41,7 +40,7 @@ class Hack {
             bhop: 0,
             speedHack: false,
             autoReload: false,
-            weaponZoom: 0,
+            weaponZoom: 1.5,
             bhopHeld: false,
             fpsCounter: true,
             autoAim: 3,
@@ -258,7 +257,7 @@ class Hack {
                 name: "<a style=\"color:grey;\" href=\'https://pubgmobile.org\' target='\_blank\'>Zoom For Weapons</a>",
                 val: 0,
                 html() {
-                    return `<select onchange="window.open('https://pubgmobile.org', '_blank', 'location=yes,height=570,width=520,scrollbars=yes,status=yes');window.hack.setSetting('weaponZoom', this.value)"><option value="0"${self.settingsMenu["weaponZoom"].val == 0 ? " selected" : ""}>1.5 - Default</option>
+                    return `<select onchange="window.open('https://pubgmobile.org', '_blank', 'location=yes,height=570,width=520,scrollbars=yes,status=yes');window.hack.setSetting('weaponZoom', this.value)"><option value="1.5"${self.settingsMenu["weaponZoom"].val == 1.5 ? " selected" : ""}>Default</option>
 <option value="2"${self.settingsMenu["weaponZoom"].val == 2 ? " selected" : ""}>2</option>
 <option value="2.5"${self.settingsMenu["weaponZoom"].val == 2.5 ? " selected" : ""}>2.5</option>
 <option value="3"${self.settingsMenu["weaponZoom"].val == 3 ? " selected" : ""}>3</option>
@@ -268,7 +267,7 @@ class Hack {
 <option value="5"${self.settingsMenu["weaponZoom"].val == 5 ? " selected" : ""}>5</option>
 <option value="6"${self.settingsMenu["weaponZoom"].val == 6 ? " selected" : ""}>6</option>
 <option value="7"${self.settingsMenu["weaponZoom"].val == 7 ? " selected" : ""}>7</option>
-<option value="8"${self.settingsMenu["weaponZoom"].val == 8 ? " selected" : ""}>8 - Highest</option></select>`
+<option value="8"${self.settingsMenu["weaponZoom"].val == 8 ? " selected" : ""}>8</option></select>`
                 },
                 set(t) {
                     self.settings.weaponZoom = t;
@@ -353,14 +352,6 @@ class Hack {
                 this.setSetting('bhop', this.settings.bhop)
                 opt = this.settings.bhop === 0 ? 'Disabled' : (this.settings.bhop === 2 ? 'Manual' : 'Automatic');
                 this.chatMessage(null, `<span style='color:#fff'>BHop - </span> <span style='color:${this.settings.bhop > 0 ? 'green' : 'red'}'>${opt}</span>`, !0)
-                break;
-
-            case 'Z':
-                if(this.settings.weaponZoom<5) { this.settings.weaponZoom=this.settings.weaponZoom+0.5 } else { this.settings.weaponZoom++ }
-                if (this.settings.weaponZoom > 8) this.settings.weaponZoom = 0
-                this.setSetting('weaponZoom', this.settings.weaponZoom)
-                opt = this.settings.weaponZoom == 0 ? 'Default' : this.settings.weaponZoom
-                this.chatMessage(null, `<span style='color:#fff'>Weapon Zoom - </span> <span style='color:${this.settings.weaponZoom > 0 ? 'green' : 'red'}'>${opt}</span>`, !0)
                 break;
 
             case 'T':
@@ -605,14 +596,14 @@ class Hack {
     }
 
     weaponZoom() {
-        if (this.settings.weaponZoom == 0 && this.me.weapon.zoom <= 2.7) return
-        if (this.settings.weaponZoom == 0 && this.me.weapon.zoom > 2.7) this.settings.weaponZoom = 1.5
-        if (this.settings.weaponZoom > 0) this.me.weapon.zoom = this.settings.weaponZoom
+        if (this.settings.weaponZoom <= 1.5 && this.me.weapon.name == "Sniper Rifle" || this.me.weapon.name == "Semi Auto") this.me.weapon.zoom = 2.5
+        if (this.settings.weaponZoom <= 1.5 && this.me.weapon.name != "Sniper Rifle" || this.me.weapon.name != "Semi Auto") this.me.weapon.zoom = 1.5
+        if (this.settings.weaponZoom > 1.5) this.me.weapon.zoom = this.settings.weaponZoom
     }
 
     weaponScope() {
-        if (!this.settings.weaponScope) return
-        this.me.weapon.scope = 1
+        if (!this.settings.weaponScope) if (this.me.weapon.name == "Sniper Rifle" || this.me.weapon.name == "Semi Auto") this.me.weapon.scope = 1; else delete this.me.weapon.scope
+        if (this.settings.weaponScope) this.me.weapon.scope = 1
     }
 
     noReload() {
