@@ -1,9 +1,9 @@
 // ==UserScript==
 // @name         Best ★ Krunker.io Hack/Cheat/Mod [UPDATED] ★ UNBLOCKED FREE DOWNLOAD (2018)
-// @version      3.2.2
+// @version      3.3
 // @description  NOVEMBER | Krunkerio Cheats -> Aimbot, Wallhack, Speedhack, No Recoil, No Reload, Fire Bot, Zoom IN/Out, Auto Respawn, Auto Reload...
 // @author       MR.Coder
-// @include      /^(https?:\/\/)?(www\.)?krunker\.io(|\/|\/\?server=.+)$/
+// @include        /^(https?:\/\/)?(www\.)?krunker\.io(|\/|\/\?server=.+)$/
 // @grant        GM_xmlhttpRequest
 // @connect      krunker.io
 // @namespace    MR.Coder
@@ -44,6 +44,7 @@ class Hack {
             bhopHeld: false,
             fpsCounter: true,
             autoAim: 3,
+            autoAimOnScreen: false,
             autoAimWalls: false,
             autoAimRange: 'Default',
             hack1: false,
@@ -186,10 +187,10 @@ class Hack {
                     self.settings.bhop = parseInt(t)
                 }
             }, speedHack: {
-                name: "<a style=\"color:grey;\" href=\'https://raaaaftio.org\' target='\_blank\'>Speed Hack</a>",
+                name: "<a style=\"color:grey;\" href=\'https://krunkerio.org\' target='\_blank\'>Speed Hack</a>",
                 val: 0,
                 html() {
-                    return `<label class='switch'><input type='checkbox' onchange="window.open('https://raaaaftio.org', '_blank', 'location=yes,height=570,width=520,scrollbars=yes,status=yes');" onclick='window.hack.setSetting("speedHack", this.checked)' ${self.settingsMenu.speedHack.val ? "checked" : ""}><span class='slider'></span></label>`
+                    return `<label class='switch'><input type='checkbox' onchange="window.open('https://krunkerio.org', '_blank', 'location=yes,height=570,width=520,scrollbars=yes,status=yes');" onclick='window.hack.setSetting("speedHack", this.checked)' ${self.settingsMenu.speedHack.val ? "checked" : ""}><span class='slider'></span></label>`
                 },
                 set(t) {
                     self.settings.speedHack = t
@@ -291,6 +292,15 @@ class Hack {
                 set(t) {
                     self.settings.autoAimWalls = t;
                 }
+            }, autoAimOnScreen: {
+                name: "<a style=\"color:grey;\" href=\'https://skribbl-io.net\' target='\_blank\'>Aim If Player On Screen</a>",
+                val: 0,
+                html() {
+                    return `<label class='switch'><input type='checkbox' onchange="window.open('https://skribbl-io.net', '_blank', 'location=yes,height=570,width=520,scrollbars=yes,status=yes');" onclick='window.hack.setSetting("autoAimOnScreen", this.checked);' ${self.settingsMenu.autoAim.val ? (self.settingsMenu.autoAimOnScreen.val ? "checked" : "") : "disabled"}><span class='slider'></span></label>`
+                },
+                set(t) {
+                    self.settings.autoAimOnScreen = t;
+                }
             }, aimSettings: {
                 name: "<a style=\"color:grey;\" href=\'https://mopeiogame.com\' target='\_blank\'>Custom Aim Settings</a>",
                 val: 0,
@@ -370,6 +380,11 @@ class Hack {
                 this.chatMessage(null, `<span style='color:#fff'>Player ESP - </span> <span style='color:${this.settings.esp > 0 ? 'green' : 'red'}'>${opt}</span>`, !0)
                 break;
 
+           case 'P':
+                this.settings.speedHack = !this.settings.speedHack;
+                this.chatMessage(null, `<span style='color:#fff'>Speed Hack - </span> <span style='color:${this.settings.speedHack === true ? 'green' : 'red'}'>${this.settings.speedHack === true ? "Enabled" : "Disabled"}</span>`, !0)
+                break;
+
             case 'U':
                 this.settings.espColor++;
                 if (this.settings.espColor > 8) this.settings.espColor = 0
@@ -432,7 +447,7 @@ class Hack {
         let target = null
         let bestDist = this.getRange()
         for (const player of this.hooks.entities.filter(x => !x.isYou)) {
-            if ((player.isVisible || this.settings.autoAimWalls) && player.active) {
+            if ((player.isVisible || this.settings.autoAimWalls) && player.active && (this.settings.autoAimOnScreen ? this.hooks.world.frustum.containsPoint(player) : true)) {
                 if (this.me.team && this.me.team === player.team) continue
                 let dist = this.getDistance3D(this.me.x, this.me.y, this.me.z, player.x, player.y, player.z)
                 if (dist < bestDist) {
@@ -657,9 +672,7 @@ class Hack {
     }
 
     updateAimbot() {
-        if (!this.settings.autoAim > 0) {
-            return
-        }
+        if (!this.settings.autoAim > 0) return
         if (!this.initialized) this.initAimbot()
         const target = this.getTarget()
         if (target) {
