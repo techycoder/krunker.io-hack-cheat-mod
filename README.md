@@ -11,6 +11,11 @@
 • Auto Aim/Respawn/Reload/Weapon Swap</br>
 • Scope&Zoom for weapons....
 </br></br>
+<h3>Last Updates</h3>
+<b>[3.3]:</b> Speed Hack change button added, aim if player is on screen added.</br>
+https://krunkerio.net</br>
+https://krunkerio.org</br>
+
 <h3>Fast Keys</h3>
 T: Change Auto Aim</br>
 Y: Change ESP Style</br>
