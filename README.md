@@ -10,7 +10,7 @@
 • No Fire Limit</br>
 • Auto Aim/Respawn/Reload/Weapon Swap</br>
 • Scope&Zoom for weapons....
-</br></br>
+
 <h3>Last Updates</h3>
 <b>[3.3]:</b> Speed Hack change button added, aim if player is on screen added.</br>
 https://krunkerio.net</br>
