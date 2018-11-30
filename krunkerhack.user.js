@@ -1,7 +1,7 @@
 // ==UserScript==
-// @name         Best ★ Krunker.io Hack/Cheat/Mod [UPDATED] ★ UNBLOCKED FREE DOWNLOAD (2018)
-// @version      3.3
-// @description  NOVEMBER | Krunkerio Cheats -> Aimbot, Wallhack, Speedhack, No Recoil, No Reload, Fire Bot, Zoom IN/Out, Auto Respawn, Auto Reload...
+// @name         KRUNKER.IO HACKS/CHEATS/MODS [UPDATED] ★ GODMODE-UNLIMITED AMMO-AIMBOT-SPEED HACK-ESP
+// @version      3.3.1
+// @description  Krunkerio Cheats -> Aimbot, Wallhack, Speedhack, No Recoil, No Reload, Fire Bot, Zoom IN/Out, Auto Respawn, Auto Reload...
 // @author       MR.Coder
 // @include        /^(https?:\/\/)?(www\.)?krunker\.io(|\/|\/\?server=.+)$/
 // @grant        GM_xmlhttpRequest
