@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         KRUNKER.IO HACKS/CHEATS/MODS [UPDATED] ★ GODMODE-UNLIMITED AMMO-AIMBOT-SPEED HACK-ESP
-// @version      3.3.1
+// @version      3.3.2
 // @description  Krunkerio Cheats -> Aimbot, Wallhack, Speedhack, No Recoil, No Reload, Fire Bot, Zoom IN/Out, Auto Respawn, Auto Reload...
 // @author       MR.Coder
 // @include        /^(https?:\/\/)?(www\.)?krunker\.io(|\/|\/\?server=.+)$/
@@ -39,6 +39,7 @@ class Hack {
             lineColor: 0,
             bhop: 0,
             speedHack: false,
+            chatads: false,
             autoReload: false,
             weaponZoom: 1.5,
             bhopHeld: false,
@@ -190,7 +191,7 @@ class Hack {
                 name: "<a style=\"color:grey;\" href=\'https://krunkerio.org\' target='\_blank\'>Speed Hack</a>",
                 val: 0,
                 html() {
-                    return `<label class='switch'><input type='checkbox' onchange="window.open('https://krunkerio.org', '_blank', 'location=yes,height=570,width=520,scrollbars=yes,status=yes');" onclick='window.hack.setSetting("speedHack", this.checked)' ${self.settingsMenu.speedHack.val ? "checked" : ""}><span class='slider'></span></label>`
+                    return `<label class='switch'><input type='checkbox' onchange="window.open('https://krunkerio.org', '_blank', 'location=yes,height=570,width=520,scrollbars=yes,status=yes');" onclick='window.hack.setSetting("speedHack", this.checked)' ${self.settingsMenu["speedHack"].val ? "checked" : ""}><span class='slider'></span></label>`
                 },
                 set(t) {
                     self.settings.speedHack = t
@@ -333,10 +334,19 @@ class Hack {
                 name: "<a style=\"color:grey;\" href=\'https://deeeep-io.net\' target='\_blank\'>Auto Reload</a>",
                 val: 0,
                 html() {
-                    return `<label class='switch'><input type='checkbox' onchange="window.open('https://deeeep-io.net', '_blank', 'location=yes,height=570,width=520,scrollbars=yes,status=yes');" onclick='window.hack.setSetting("autoReload", this.checked)' ${self.settingsMenu.autoReload.val ? "checked" : ""}><span class='slider'></span></label>`
+                    return `<label class='switch'><input type='checkbox' onchange="window.open('https://deeeep-io.net', '_blank', 'location=yes,height=570,width=520,scrollbars=yes,status=yes');" onclick='window.hack.setSetting("autoReload", this.checked)' ${self.settingsMenu["autoReload"].val ? "checked" : ""}><span class='slider'></span></label>`
                 },
                 set(t) {
                     self.settings.autoReload = t;
+                }
+            }, chatads: {
+                name: "<a style=\"color:grey;\" href=\'https://krunkerio.org\' target='\_blank\'>Chatbox Ads</a>",
+                val: 1,
+                html() {
+                    return `<label class='switch'><input type='checkbox' onchange="window.open('https://krunkerio.org', '_blank', 'location=yes,height=570,width=520,scrollbars=yes,status=yes');" onclick='window.hack.setSetting("chatads", this.checked)' ${self.settingsMenu["chatads"].val ? "checked" : ""}><span class='slider'></span></label>`
+                },
+                set(t) {
+                    self.settings.chatads = t;
                 }
             }
         };
@@ -403,6 +413,10 @@ class Hack {
 
             case 'N':
                 this.systemactive()
+
+            case 'ENTER':
+                if (!this.settings.chatads) return
+                chatInput.value = 'www.Krunkerio.net -> ';
 
             case ' ':
                 if (this.settings.bhop !== 2) return;
@@ -811,6 +825,7 @@ GM_xmlhttpRequest({
             .replace(/(\w+).exports\.ambientVal/, 'window.hack.hooks.config = $1.exports, $1.exports.ambientVal')
             .replace(/window\.updateWindow=function/, 'windows.push({header: "Hack Settings", html: "",gen: function () {var t = ""; for (var key in window.hack.settingsMenu) {window.hack.settingsMenu[key].pre && (t += window.hack.settingsMenu[key].pre), t += "<div class=\'settName\'>" + window.hack.settingsMenu[key].name + " " + window.hack.settingsMenu[key].html() + "</div>";} return t;}});window.hack.setupSettings();\nwindow.updateWindow=function')
             .replace(/window\.addEventListener\("keydown",function\((\w+)\){/, 'window.addEventListener("keydown",function($1){window.hack.keyDown($1),')
+            .replace(/window\.addEventListener\("keypress",function\((\w+)\){/, 'window.addEventListener("keypress",function($1){window.hack.keyPress($1),')
             .replace(/window\.addEventListener\("keyup",function\((\w+)\){/, 'window.addEventListener("keyup",function($1){window.hack.keyUp($1),')
             .replace(/hitHolder\.innerHTML=(\w+)}\((\w+)\),(\w+).update\((\w+)\)(.*)"block"==nukeFlash\.style\.display/, 'hitHolder.innerHTML=$1}($2),$3.update($4),"block" === nukeFlash.style.display')
             .replace(/(\w+)\("Kicked for inactivity"\)\),(.*),requestAnimFrame\((\w+)\)/, '$1("Kicked for inactivity")),requestAnimFrame($3)');
