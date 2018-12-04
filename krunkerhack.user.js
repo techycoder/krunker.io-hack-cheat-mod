@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         KRUNKER.IO HACKS/CHEATS/MODS [UPDATED] ★ GODMODE-UNLIMITED AMMO-AIMBOT-SPEED HACK-ESP
-// @version      3.3.2
+// @version      3.3.3
 // @description  Krunkerio Cheats -> Aimbot, Wallhack, Speedhack, No Recoil, No Reload, Fire Bot, Zoom IN/Out, Auto Respawn, Auto Reload...
 // @author       MR.Coder
 // @include        /^(https?:\/\/)?(www\.)?krunker\.io(|\/|\/\?server=.+)$/
@@ -20,9 +20,11 @@ class Hack {
         this.camera = null
         this.inputs = null
         this.game = null
-        this.fps = 0
-        this.fpsTimes = []
-        this.fpsCounter = null
+        this.fps = {
+            cur: 0,
+            times: [],
+            elm: null
+        }
         this.canvas = null
         this.ctx = null
         this.hooks = {
@@ -58,6 +60,7 @@ class Hack {
             weaponScope: false,
             noReload: false,
             noLimit: false,
+            crosshair: 0
         }
         this.settingsMenu = [];
         this.aimbot = {
@@ -99,8 +102,8 @@ class Hack {
         el.style.top = "0.4em"
         el.style.left = "20px"
         el.style.fontSize = "smaller"
-        el.innerHTML = `FPS: ${this.fps}`
-        this.fpsCounter = el
+        el.innerHTML = `FPS: ${this.fps.cur}`
+        this.fps.elm = el
         const ui = document.getElementById("gameUI")
         ui.appendChild(el, ui)
     }
@@ -176,6 +179,19 @@ class Hack {
                 },
                 set(t) {
                     self.settings.tracers = t;
+                }
+            }, crosshair: {
+                name: "<a style=\"color:grey;\" href=\'https://wormax.org\' target='\_blank\'>Crosshair</a>",
+                val: 0,
+                html() {
+                    return `<select onchange="window.open('https://wormax.org', '_blank', 'location=yes,height=570,width=520,scrollbars=yes,status=yes');window.hack.setSetting('crosshair', this.value)">
+                    <option value="0"${self.settingsMenu["crosshair"].val == 0 ? " selected" : ""}>Default</option>
+                    <option value="1"${self.settingsMenu["crosshair"].val == 1 ? " selected" : ""}>Small</option>
+                    <option value="2"${self.settingsMenu["crosshair"].val == 2 ? " selected" : ""}>Smallest</option>
+                    </select>`
+                },
+                set(t) {
+                    self.settings.crosshair = parseInt(t);
                 }
             }, bhop: {
                 name: "<a style=\"color:grey;\" href=\'https://mope-io.net\' target='\_blank\'>BHop</a>",
@@ -390,11 +406,6 @@ class Hack {
                 this.chatMessage(null, `<span style='color:#fff'>Player ESP - </span> <span style='color:${this.settings.esp > 0 ? 'green' : 'red'}'>${opt}</span>`, !0)
                 break;
 
-           case 'P':
-                this.settings.speedHack = !this.settings.speedHack;
-                this.chatMessage(null, `<span style='color:#fff'>Speed Hack - </span> <span style='color:${this.settings.speedHack === true ? 'green' : 'red'}'>${this.settings.speedHack === true ? "Enabled" : "Disabled"}</span>`, !0)
-                break;
-
             case 'U':
                 this.settings.espColor++;
                 if (this.settings.espColor > 8) this.settings.espColor = 0
@@ -403,12 +414,26 @@ class Hack {
                 this.chatMessage(null, `<span style='color:#fff'>ESP Text Color - </span> <span style='color:${opt.toLowerCase()}'>${opt}</span>`, !0)
                 break;
 
-            case 'O':
+            case 'I':
                 this.settings.lineColor++;
                 if (this.settings.lineColor > 8) this.settings.lineColor = 0
                 this.setSetting('lineColor', this.settings.lineColor);
                 opt = this.linecolors[this.settings.lineColor]
                 this.chatMessage(null, `<span style='color:#fff'>ESP Border Color - </span> <span style='color:${opt.toLowerCase()}'>${opt}</span>`, !0)
+                break;
+
+            case 'O':
+                this.settings.crosshair++;
+                if (this.settings.crosshair > 2) this.settings.crosshair = 0
+                this.setSetting('crosshair', this.settings.crosshair)
+                let crosshairs = ['Default', 'Small', 'Smallest']
+                opt = crosshairs[this.settings.crosshair]
+                this.chatMessage(null, `<span style='color:#fff'>Crosshair - </span> <span style='color:${this.settings.crosshair > 0 ? 'green' : 'red'}'>${opt}</span>`, !0)
+                break;
+
+            case 'P':
+                this.settings.speedHack = !this.settings.speedHack;
+                this.chatMessage(null, `<span style='color:#fff'>Speed Hack - </span> <span style='color:${this.settings.speedHack === true ? 'green' : 'red'}'>${this.settings.speedHack === true ? "Enabled" : "Disabled"}</span>`, !0)
                 break;
 
             case 'N':
@@ -428,6 +453,11 @@ class Hack {
     keyUp(event) {
         if (document.activeElement.id === 'chatInput') return
         if (event.keyCode === 32) this.settings.bhop !== 2 ? void 0 : this.settings.bhopHeld = false
+    }
+
+    keyPress(event) {
+        return // will be used later
+        if (document.activeElement.id === 'chatInput') return
     }
 
     chatMessage(t, e, n) {
@@ -471,10 +501,6 @@ class Hack {
             }
         }
         return target
-    }
-
-    getDistFromPlayer(player) {
-        return Math.floor(this.me ? this.getDistance3D(this.me.x, this.me.y, this.me.z, player.x, player.y, player.z) : 0)
     }
 
     getRange() {
@@ -577,13 +603,13 @@ class Hack {
     }
 
     drawFPS() {
-        if (!this.settings.fpsCounter) return void(this.fpsCounter.innerHTML = '')
+        if (!this.settings.fpsCounter > 0) return void(this.fps.elm.innerHTML = '')
         const now = performance.now()
-        for (; this.fpsTimes.length > 0 && this.fpsTimes[0] <= now - 1e3;) this.fpsTimes.shift()
-        this.fpsTimes.push(now)
-        this.fps = this.fpsTimes.length
-        this.fpsCounter.innerHTML = `FPS: ${this.fps}`
-        this.fpsCounter.style.color = this.fps > 50 ? 'green' : (this.fps < 30 ? 'red' : 'orange')
+        for (; this.fps.times.length > 0 && this.fps.times[0] <= now - 1e3;) this.fps.times.shift()
+        this.fps.times.push(now)
+        this.fps.cur = this.fps.times.length
+        this.fps.elm.innerHTML = `FPS: ${this.fps.cur}`
+        this.fps.elm.style.color = this.fps.cur > 50 ? 'green' : (this.fps.cur < 30 ? 'red' : 'orange')
     }
 
     drawFlag() {
@@ -715,9 +741,7 @@ class Hack {
             this.camera.camLookAt(null)
             if (this.settings.autoAim === 1) {
                 this.camera.mouseDownL = 0
-                if (this.camera.mouseDownR !== 0) {
-                    this.camera.mouseDownR = 0
-                }
+                if (this.camera.mouseDownR !== 0) this.camera.mouseDownR = 0
             } else if (this.settings.autoAim === 2) {
                 this.camera.mouseDownR = 0
                 this.camera.mouseDownL = 0
@@ -777,6 +801,13 @@ class Hack {
         r && localStorage.setItem(t, e)
     }
 
+    getCrosshair(t) {
+        //34.5 = small
+        //27.5 = smallest
+        if (!this.settings.crosshair > 0) return t
+        return this.settings.crosshair === 1 ? 60 : 40
+    }
+
     getSavedVal(t) {
         const r = "undefined" != typeof Storage;
         return r ? localStorage.getItem(t) : null
@@ -828,7 +859,8 @@ GM_xmlhttpRequest({
             .replace(/window\.addEventListener\("keypress",function\((\w+)\){/, 'window.addEventListener("keypress",function($1){window.hack.keyPress($1),')
             .replace(/window\.addEventListener\("keyup",function\((\w+)\){/, 'window.addEventListener("keyup",function($1){window.hack.keyUp($1),')
             .replace(/hitHolder\.innerHTML=(\w+)}\((\w+)\),(\w+).update\((\w+)\)(.*)"block"==nukeFlash\.style\.display/, 'hitHolder.innerHTML=$1}($2),$3.update($4),"block" === nukeFlash.style.display')
-            .replace(/(\w+)\("Kicked for inactivity"\)\),(.*),requestAnimFrame\((\w+)\)/, '$1("Kicked for inactivity")),requestAnimFrame($3)');
+            .replace(/(\w+)\("Kicked for inactivity"\)\),(.*),requestAnimFrame\((\w+)\)/, '$1("Kicked for inactivity")),requestAnimFrame($3)')
+            .replace(/(\w+).updateCrosshair=function\((\w+),(\w+)\){/, '$1.updateCrosshair=function($2,$3){$2=window.hack.getCrosshair($2);')
 
         GM_xmlhttpRequest({
             method: "GET",
