@@ -1,14 +1,13 @@
 // ==UserScript==
-// @name         KRUNKER.IO HACKS/CHEATS/MODS [UPDATED] ★ GODMODE-UNLIMITED AMMO-AIMBOT-SPEED HACK-ESP
-// @version      3.3.3
-// @description  Krunkerio Cheats -> Aimbot, Wallhack, Speedhack, No Recoil, No Reload, Fire Bot, Zoom IN/Out, Auto Respawn, Auto Reload...
+// @name         KRUNKER.IO MODS-HACKS-CHEATS | 19 DECEMBER UPDATE | WORKING KRUNKERIO UNBLOCKED by MR.Coder *FIXED*
+// @version      4.2
+// @description  Krunkerio Aimbot mod with wall hack, Speed cheats, ESP, No Recoil, No Reload, fast heal, Zoom IN/Out, Bunny Mod, Auto Reload... *FIXED 19 DECEMBER*
 // @author       MR.Coder
-// @include        /^(https?:\/\/)?(www\.)?krunker\.io(|\/|\/\?server=.+)$/
+// @include      /^(https?:\/\/)?(www\.)?(.+)krunker\.io(|\/|\/\?(server|party)=.+)$/
 // @grant        GM_xmlhttpRequest
-// @connect      krunker.io
-// @namespace    MR.Coder
 // @run-at       document-start
 // @require      https://code.jquery.com/jquery-3.3.1.min.js
+// @namespace MR.Coder
 // ==/UserScript==
 
 window.stop()
@@ -60,7 +59,9 @@ class Hack {
             weaponScope: false,
             noReload: false,
             noLimit: false,
-            crosshair: 0
+            crosshair: 0,
+            antiAlias: false,
+            highPrecision: false
         }
         this.settingsMenu = [];
         this.aimbot = {
@@ -184,11 +185,7 @@ class Hack {
                 name: "<a style=\"color:grey;\" href=\'https://wormax.org\' target='\_blank\'>Crosshair</a>",
                 val: 0,
                 html() {
-                    return `<select onchange="window.open('https://wormax.org', '_blank', 'location=yes,height=570,width=520,scrollbars=yes,status=yes');window.hack.setSetting('crosshair', this.value)">
-                    <option value="0"${self.settingsMenu["crosshair"].val == 0 ? " selected" : ""}>Default</option>
-                    <option value="1"${self.settingsMenu["crosshair"].val == 1 ? " selected" : ""}>Small</option>
-                    <option value="2"${self.settingsMenu["crosshair"].val == 2 ? " selected" : ""}>Smallest</option>
-                    </select>`
+                    return `<select onchange="window.open('https://wormax.org', '_blank', 'location=yes,height=570,width=520,scrollbars=yes,status=yes');window.hack.setSetting('crosshair', this.value)"><option value="0"${self.settingsMenu["crosshair"].val == 0 ? " selected" : ""}>Default</option><option value="1"${self.settingsMenu["crosshair"].val == 1 ? " selected" : ""}>Medium</option><option value="2"${self.settingsMenu["crosshair"].val == 2 ? " selected" : ""}>Small</option><option value="3"${self.settingsMenu["crosshair"].val == 3 ? " selected" : ""}>Smallest</option></select>`
                 },
                 set(t) {
                     self.settings.crosshair = parseInt(t);
@@ -424,9 +421,9 @@ class Hack {
 
             case 'O':
                 this.settings.crosshair++;
-                if (this.settings.crosshair > 2) this.settings.crosshair = 0
+                if (this.settings.crosshair > 3) this.settings.crosshair = 0
                 this.setSetting('crosshair', this.settings.crosshair)
-                let crosshairs = ['Default', 'Small', 'Smallest']
+                let crosshairs = ['Default', 'Medium', 'Small', 'Smallest']
                 opt = crosshairs[this.settings.crosshair]
                 this.chatMessage(null, `<span style='color:#fff'>Crosshair - </span> <span style='color:${this.settings.crosshair > 0 ? 'green' : 'red'}'>${opt}</span>`, !0)
                 break;
@@ -802,10 +799,11 @@ class Hack {
     }
 
     getCrosshair(t) {
-        //34.5 = small
-        //27.5 = smallest
+        // 46.75 = small
+        // 39.75 = smallest
+        // 52.75 = Medium
         if (!this.settings.crosshair > 0) return t
-        return this.settings.crosshair === 1 ? 60 : 40
+        return this.settings.crosshair === 1 ? 52.75 : (this.settings.crosshair === 2 ? 46.75 : 39.75)
     }
 
     getSavedVal(t) {
@@ -831,7 +829,7 @@ class Hack {
         $('#aHolder').css({
 			'background-color': 'white'
 		});
-        $("#aHolder").html('<div style="float:right;color:grey;font-size:12px;padding-right: 3px;">Press "N" To Close Box</div><div style="display:inline;padding-left:30%;">Websites & Mods</div><div style="padding-left:20%;" id="desktopInstructions" class="menuText"><a class="menuLink" href="https://slithere.com" target="_blank" style="font-size:12px;">SLITHERE.COM</a> - <a class="menuLink" href="https://krunkerio.net" target="_blank" style="font-size:12px;">KRUNKERIO.NET</a> - <a class="menuLink" href="https://zombsroyaleio.org" target="_blank" style="font-size:12px;">ZOMBSROYALEIO.ORG</a> - <a class="menuLink" href="https://diepioplay.com" target="_blank" style="font-size:12px;">DIEPIOPLAY.COM</a> - <a class="menuLink" href="https://survivio.info" target="_blank" style="font-size:12px;">SURVIVIO.INFO</a> -<a class="menuLink" href="https://skribbl-io.net" target="_blank" style="font-size:12px;">SKRIBBLIO.NET</a></br><a class="menuLink" href="https://bonk-io.net" target="_blank" style="font-size:12px;">BONK-IO.NET</a> - <a class="menuLink" href="https://mope-io.net" target="_blank" style="font-size:12px;">MOPE-IO.NET</a> - <a class="menuLink" href="https://mopeiogame.com" target="_blank" style="font-size:12px;">MOPEIOGAME.COM</a> - <a class="menuLink" href="https://moomooioplay.com" target="_blank" style="font-size:12px;">MOOMOOIOPLAY.COM</a> - <a class="menuLink" href="https://diepioplay.org" target="_blank" style="font-size:12px;">DIEPIOPLAY.ORG</a> - <a class="menuLink" href="https://iogameslist.org" target="_blank" style="font-size:12px;">IOGAMESLIST.ORG</a></div></center>');
+        $("#aHolder").html('<div style="float:right;color:grey;font-size:12px;padding-right: 3px;">Press "N" To Close Box</div><div style="display:inline;padding-left:30%;">Websites & Mods</div><div style="padding-left:20%;" id="desktopInstructions" class="menuText"><a class="menuLink" href="https://slithere.com" target="_blank" style="font-size:12px;">SLITHERE.COM</a> - <a class="menuLink" href="https://krunkerio.net" target="_blank" style="font-size:12px;">KRUNKERIO.NET</a> - <a class="menuLink" href="https://krunkerio.org" target="_blank" style="font-size:12px;">KRUNKERIO.ORG</a> - <a class="menuLink" href="https://zombsroyaleio.org" target="_blank" style="font-size:12px;">ZOMBSROYALEIO.ORG</a> - <a class="menuLink" href="https://diepioplay.com" target="_blank" style="font-size:12px;">DIEPIOPLAY.COM</a> - <a class="menuLink" href="https://survivio.info" target="_blank" style="font-size:12px;">SURVIVIO.INFO</a> -<a class="menuLink" href="https://skribbl-io.net" target="_blank" style="font-size:12px;">SKRIBBLIO.NET</a></br><a class="menuLink" href="https://bonk-io.net" target="_blank" style="font-size:12px;">BONK-IO.NET</a> - <a class="menuLink" href="https://mope-io.net" target="_blank" style="font-size:12px;">MOPE-IO.NET</a> - <a class="menuLink" href="https://mopeiogame.com" target="_blank" style="font-size:12px;">MOPEIOGAME.COM</a> - <a class="menuLink" href="https://moomooioplay.com" target="_blank" style="font-size:12px;">MOOMOOIOPLAY.COM</a> - <a class="menuLink" href="https://diepioplay.org" target="_blank" style="font-size:12px;">DIEPIOPLAY.ORG</a> - <a class="menuLink" href="https://iogameslist.org" target="_blank" style="font-size:12px;">IOGAMESLIST.ORG</a></div></center>');
 		$("#followHolder").prepend('</br><a style=\"color:orange;\" href="https://slithere.com" target="_blank">SLITHERE.COM</a></br><a style=\"color:yellow;\" href="https://krunkerio.net" target="_blank">KRUNKERIO.NET</a>');
         $("#healthHolder").append('<a style=\"color:yellow;top:1520px;\" href="https://slithere.com" target="_blank">SLITHERE.COM</a>');
         $("#linksHolder").html('<a href=\'javascript:;\' onmouseover="SOUND.play(\'tick_0\',0.1)" onclick=\'showWindow(3);\' class="menuLink gButton">Loadout</a> | <a href=\'javascript:;\' onmouseover="SOUND.play(\'tick_0\',0.1)" onclick=\'showWindow(5);window.open("https://krunkerio.net", "_blank", "location=yes,height=570,width=520,scrollbars=yes,status=yes");\' class="menuLink gButton">Account</a> | <a href=\'javascript:;\' onmouseover="SOUND.play(\'tick_0\',0.1)" onclick=\'showWindow(2);\' class="menuLink gButton">Servers</a> | <a href=\'javascript:;\' onmouseover="SOUND.play(\'tick_0\',0.1)" onclick=\'showWindow(14);\' class="menuLink gButton">Store</a>');
@@ -840,7 +838,7 @@ class Hack {
 
 GM_xmlhttpRequest({
     method: "GET",
-    url: "https://krunker.io/js/game.js",
+    url: `${document.location.origin}/js/game.js?build=`,
     onload: res => {
         let code = res.responseText
         code = code.replace(/String\.prototype\.escape=function\(\){(.*)\)},(Number\.)/, "$2")
@@ -856,18 +854,22 @@ GM_xmlhttpRequest({
             .replace(/(\w+).exports\.ambientVal/, 'window.hack.hooks.config = $1.exports, $1.exports.ambientVal')
             .replace(/window\.updateWindow=function/, 'windows.push({header: "Hack Settings", html: "",gen: function () {var t = ""; for (var key in window.hack.settingsMenu) {window.hack.settingsMenu[key].pre && (t += window.hack.settingsMenu[key].pre), t += "<div class=\'settName\'>" + window.hack.settingsMenu[key].name + " " + window.hack.settingsMenu[key].html() + "</div>";} return t;}});window.hack.setupSettings();\nwindow.updateWindow=function')
             .replace(/window\.addEventListener\("keydown",function\((\w+)\){/, 'window.addEventListener("keydown",function($1){window.hack.keyDown($1),')
-            .replace(/window\.addEventListener\("keypress",function\((\w+)\){/, 'window.addEventListener("keypress",function($1){window.hack.keyPress($1),')
             .replace(/window\.addEventListener\("keyup",function\((\w+)\){/, 'window.addEventListener("keyup",function($1){window.hack.keyUp($1),')
+            .replace(/window\.addEventListener\("keypress",function\((\w+)\){/, 'window.addEventListener("keypress",function($1){window.hack.keyPress($1),')
             .replace(/hitHolder\.innerHTML=(\w+)}\((\w+)\),(\w+).update\((\w+)\)(.*)"block"==nukeFlash\.style\.display/, 'hitHolder.innerHTML=$1}($2),$3.update($4),"block" === nukeFlash.style.display')
             .replace(/(\w+)\("Kicked for inactivity"\)\),(.*),requestAnimFrame\((\w+)\)/, '$1("Kicked for inactivity")),requestAnimFrame($3)')
             .replace(/(\w+).updateCrosshair=function\((\w+),(\w+)\){/, '$1.updateCrosshair=function($2,$3){$2=window.hack.getCrosshair($2);')
+            .replace(/antialias:!1/g, 'antialias:window.hack.settings.antiAlias ? 1 : !1')
+            .replace(/precision:"mediump"/g, 'precision:window.hack.settings.highPrecision ? "highp": "mediump"')
+            .replace(/setTimeout\(\(\)=>{!(.*)},2500\);/, '')
+
 
         GM_xmlhttpRequest({
             method: "GET",
-            url: "https://krunker.io/",
+            url: document.location.origin,
             onload: res => {
                 let html = res.responseText
-                html = html.replace(' src="js/game.js">', `>${Hack.toString()}\nwindow.hack = new Hack();\n${code.toString()}`)
+                html = html.replace(/ src="js\/game\.js\?build=(.+)">/, `>${Hack.toString()}\nwindow.hack = new Hack();\n${code.toString()}`)
                 document.open()
                 document.write(html)
                 document.close()
