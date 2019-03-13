@@ -1,26 +1,14 @@
 <h3>Features</h3>
 • Aimbot (Triggerbot, Quickscoper, Manual, Hip fire) (Various Ranges)</br>
 • FPS Counter</br>
-• Player Tracers</br>
-• Player ESP (aka. Wallhack) (Full, Box) (Various Colors&Options)</br>
 • BHop (Automatic, Manual)</br>
-• Speed Hack</br>
-• No Recoil</br>
-• No Reload</br>
-• No Fire Limit</br>
-• Auto Aim/Respawn/Reload/Weapon Swap</br>
-• Scope&Zoom for weapons....
 
 <h3>Last Updates</h3>
-<b>[3.3]:</b> Speed Hack change button added, aim if player is on screen added.</br>
 https://krunkerio.net</br>
 https://krunkerio.org</br>
 
 <h3>Fast Keys</h3>
 T: Change Auto Aim</br>
-Y: Change ESP Style</br>
-U: Change ESP Text Color</br>
-O: Change ESP Line Color</br>
 B: Change Bhop Mode</br>
 </br>
 <b>Requirements:</b> • Tampermonkey</br>
