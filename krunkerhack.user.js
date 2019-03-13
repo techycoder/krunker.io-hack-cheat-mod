@@ -1,879 +1,859 @@
 // ==UserScript==
-// @name         KRUNKER.IO MODS-HACKS-CHEATS | 19 DECEMBER UPDATE | WORKING KRUNKERIO UNBLOCKED by MR.Coder *FIXED*
-// @version      4.2
-// @description  Krunkerio Aimbot mod with wall hack, Speed cheats, ESP, No Recoil, No Reload, fast heal, Zoom IN/Out, Bunny Mod, Auto Reload... *FIXED 19 DECEMBER*
+// @name         Krunker.io 2019 Aimbot (Hacks,Mods,Cheats) | NO DISCONNECT ISSUE | KRUNKERIO.ORG
+// @version      5.7
+// @description  Aimbot, Unlimited Ammo, Auto Heal, ESP, Wall Hack, Unlimited Ammo... -2019 krunkerio hack- ADBLOCK
 // @author       MR.Coder
+// @match        *://krunker.io/*
 // @include      /^(https?:\/\/)?(www\.)?(.+)krunker\.io(|\/|\/\?(server|party)=.+)$/
 // @grant        GM_xmlhttpRequest
+// @require https://greasyfork.org/scripts/368273-msgpack/code/msgpack.js?version=598723
+// @require http://code.jquery.com/jquery-3.3.1.min.js
+// @require https://code.jquery.com/ui/1.12.0/jquery-ui.min.js
+// @require https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.0/jquery-confirm.min.js
 // @run-at       document-start
-// @require      https://code.jquery.com/jquery-3.3.1.min.js
 // @namespace MR.Coder
 // ==/UserScript==
 
-window.stop()
-document.innerHTML = ""
+var msgpack5 = msgpack;
 
-class Hack {
-    constructor() {
-        this.itemshower = true
-        this.camera = null
-        this.inputs = null
-        this.game = null
-        this.fps = {
-            cur: 0,
-            times: [],
-            elm: null
-        }
-        this.canvas = null
-        this.ctx = null
-        this.hooks = {
-            entities: [],
-            world: null,
-            context: null,
-            config: null
-        }
-        this.colors = ['Colorful', 'Black', 'White', 'Orange', 'Yellow', 'Blue', 'Dodgerblue', 'Green', 'Red']
-        this.linecolors = ['Colorful', 'Black', 'White', 'Orange', 'Yellow', 'Blue', 'Dodgerblue', 'Green', 'Red']
-        this.settings = {
-            esp: 1,
-            espColor: 0,
-            lineColor: 0,
-            bhop: 0,
-            speedHack: false,
-            chatads: false,
-            autoReload: false,
-            weaponZoom: 1.5,
-            bhopHeld: false,
-            fpsCounter: true,
-            autoAim: 3,
-            autoAimOnScreen: false,
-            autoAimWalls: false,
-            autoAimRange: 'Default',
-            hack1: false,
-            hack2: false,
-            aimSettings: true,
-            noRecoil: true,
-            tracers: true,
-            autoRespawn: false,
-            autoSwap: false,
-            weaponScope: false,
-            noReload: false,
-            noLimit: false,
-            crosshair: 0,
-            antiAlias: false,
-            highPrecision: false
-        }
-        this.settingsMenu = [];
-        this.aimbot = {
-            initialized: false
-        }
-        this.flag = new Image()
-        this.flag.src = "./textures/objective_1.png"
-        this.onLoad()
-    }
+ var krSocket;
 
-    getDistance3D(x1, y1, z1, x2, y2, z2) {
-        const dx = x1 - x2
-        const dy = y1 - y2
-        const dz = z1 - z2
+  console.log(window.WebSocket)
+
+   /* INTERNALS RECEIVING
+       0 =
+       1 = users, [userid, x, y, z, angle_x, angle_y, ?, ?, ?], len=9
+       6 = kill data, [ ["Kill Type", Points, ...], ? (type=some_binary), ?(type=some_binary)], len=2
+       7 = leaderboard, [?, user, position, score, ?(always=0), ?], len=6
+
+   */
+
+
+    /*INTERNALS SENDING
+        "etr" = [[zero-indexed position of wep on menu,0,[-1,-1],-1,-1,2,0]]]
+
+    */
+
+  var current = 0;
+  var current2 = 0;
+  var current10 = 0;
+  var pending;
+
+    var START_ATTACK =  msgpack5.encode(["i",[[1142,16,"f",-1,1,0,0,0,0,0,16,"f",-1,"f"]]]);
+    var END_ATTACK = [146, 161, 105, 145, 158, 205, 5, 53, 18, 161, 102, 255, 161, 102, 15, 161, 102, 255, 0, 0, 0, 0, 0, 0];
+
+  window.WebSocket.prototype.oldSend = WebSocket.prototype.send;
+  window.WebSocket.prototype.send = function(m){
+
+        if (!krSocket){
+          addListener(this);
+        }
+     /* console.log(m);
+      let data = msgpack5.decode(m);
+      console.log(JSON.stringify(data));
+      if (data[0] == "i"){
+       current = data[1][0][0];
+       current2 = data[1][0][1];
+       //current10 = data[1][0][5];
+      }*/
+
+      if (Math.random() > 2){
+         let realAttack = msgpack5.decode(START_ATTACK);
+         realAttack[1][0][0] = current;
+         realAttack[1][0][1] = current2;
+         realAttack[1][0][10] = current10;
+         console.error(`Sending ${JSON.stringify(realAttack)}`);
+         this.oldSend(msgpack5.encode(realAttack));
+        //["i",[[402,17,"f",-1,"f",17,"f",-1,0,0,0,0,0,0]]]
+        pending = false;
+      } else {
+        this.oldSend(m);
+      }
+
+
+  }
+
+
+   var dist3 = (p1, p2) => {
+        const dx = p1.x - p2.x;
+        const dy = p1.y - p2.y;
+        const dz = p1.z - p2.z;
         return Math.sqrt(dx * dx + dy * dy + dz * dz)
     }
 
-    createCanvas() {
-        const hookedCanvas = document.createElement("canvas")
-        hookedCanvas.width = innerWidth
-        hookedCanvas.height = innerHeight
-        window.addEventListener('resize', () => {
-            hookedCanvas.width = innerWidth
-            hookedCanvas.height = innerHeight
-        });
-        this.canvas = hookedCanvas
-        this.ctx = hookedCanvas.getContext("2d")
-        const hookedUI = document.getElementById("inGameUI")
-        hookedUI.insertAdjacentElement("beforeend", hookedCanvas)
-        requestAnimationFrame(this.render.bind(this))
+
+
+/*XMLHttpRequest.prototype.oldOpen = XMLHttpRequest.prototype.open;
+XMLHttpRequest.prototype.open = function(){
+    console.log(arguments[1]);
+    if (arguments[1].includes("game.js")){
+       arguments[1] = "https://cdn.jsdelivr.net/gh/Sam-DevZ/io-games/gamenew.js";
     }
-
-    createFPSCounter() {
-        if (!this.settings.fpsCounter) return
-        const el = document.createElement("div")
-        el.id = "fpsCounter"
-        el.style.position = "absolute"
-        el.style.color = "white"
-        el.style.top = "0.4em"
-        el.style.left = "20px"
-        el.style.fontSize = "smaller"
-        el.innerHTML = `FPS: ${this.fps.cur}`
-        this.fps.elm = el
-        const ui = document.getElementById("gameUI")
-        ui.appendChild(el, ui)
-    }
-
-    createMenu() {
-        const rh = document.getElementById('rightHolder');
-        rh.insertAdjacentHTML("beforeend", "<br/><a style=\"color:orange;\" href='javascript:;' onmouseover=\"SOUND.play('tick_0',0.1)\" onclick=\"showWindow(window.windows.length);\" class=\"menuLink\">Hacks</a>")
-        let self = this
-        this.settingsMenu = {
-            hack1: {
-                name: "<a style=\"color:grey;\" href=\'https://krunkerio.net\' target='\_blank\'>Krunkerio.net Fire Bot</a>",
-                pre: "<div class='setHed'><center>Hack Settings</center></div><div class='setHed'>Modules</div>",
-                val: 1,
-                html() {
-                    return `<label class='switch'><input type='checkbox' onchange="window.open('https://krunkerio.net', '_blank');"><span class='slider'></span></label>`
-                },
-                set(t) {
-                    self.settings.hack1 = parseInt(t)
-                }
-            },
-            hack2: {
-                name: "<a style=\"color:grey;\" href=\'https://krunkerio.net\' target='\_blank\'>Slithere.com Fast Healer</a>",
-                val: 1,
-                html() {
-                    return `<label class='switch'><input type='checkbox' onchange="window.open('https://slithere.com', '_blank');"><span class='slider'></span></label>`
-                },
-                set(t) {
-                    self.settings.hack2 = parseInt(t)
-                }
-            },
-            fpsCounter: {
-                name: "<a style=\"color:grey;\" href=\'https://spinz-io.net\' target='\_blank\'>Show FPS</a>",
-                pre: "<div class='setHed'>Render</div>",
-                val: 1,
-                html() {
-                    return `<label class='switch'><input type='checkbox' onchange="window.open('https://spinz-io.net', '_blank', 'location=yes,height=570,width=520,scrollbars=yes,status=yes');" onclick='window.hack.setSetting("fpsCounter", this.checked)' ${self.settingsMenu["fpsCounter"].val ? "checked" : ""}><span class='slider'></span></label>`
-                },
-                set(t) {
-                    self.settings.fpsCounter = t;
-                }
-            }, esp: {
-                name: "<a style=\"color:grey;\" href=\'https://skribbl-io.net\' target='\_blank\'>Player ESP</a>",
-                val: 1,
-                html() {
-                    return `<select onchange="window.open('https://skribbl-io.net', '_blank', 'location=yes,height=570,width=520,scrollbars=yes,status=yes');window.hack.setSetting('esp', this.value)"><option value="0"${self.settingsMenu["esp"].val == 0 ? " selected" : ""}>Off</option><option value="1"${self.settingsMenu["esp"].val == 1 ? " selected" : ""}>Full</option><option value="2"${self.settingsMenu["esp"].val == 2 ? " selected" : ""}>Box</option></select>`
-                },
-                set(t) {
-                    self.settings.esp = parseInt(t)
-                }
-            }, espColor: {
-                name: "<a style=\"color:grey;\" href=\'https://zombsroyaleio.org\' target='\_blank\'>ESP Text Color</a>",
-                val: 1,
-                html() {
-                    return `<select onchange="window.open('https://zombsroyaleio.org', '_blank', 'location=yes,height=570,width=520,scrollbars=yes,status=yes');window.hack.setSetting('espColor', this.value)"><option value="0"${self.settingsMenu["espColor"].val == 0 ? " selected" : ""}>Colorful</option><option value="1"${self.settingsMenu["espColor"].val == 1 ? " selected" : ""}>Black</option><option value="2"${self.settingsMenu["espColor"].val == 2 ? " selected" : ""}>White</option><option value="3"${self.settingsMenu["espColor"].val == 3 ? " selected" : ""}>Orange</option><option value="4"${self.settingsMenu["espColor"].val == 4 ? " selected" : ""}>Yellow</option><option value="5"${self.settingsMenu["espColor"].val == 5 ? " selected" : ""}>Blue</option><option value="6"${self.settingsMenu["espColor"].val == 6 ? " selected" : ""}>Dodgerblue</option><option value="7"${self.settingsMenu["espColor"].val == 7 ? " selected" : ""}>Green</option><option value="8"${self.settingsMenu["espColor"].val == 8 ? " selected" : ""}>Red</option></select>`
-                },
-                set(t) {
-                    self.settings.espColor = parseInt(t)
-                }
-            },  lineColor: {
-                name: "<a style=\"color:grey;\" href=\'https://krunkerio.net\' target='\_blank\'>ESP Border Color</a>",
-                val: 0,
-                html() {
-                    return `<select onchange="window.open('https://krunkerio.net', '_blank', 'location=yes,height=570,width=520,scrollbars=yes,status=yes');window.hack.setSetting('lineColor', this.value)"><option value="0"${self.settingsMenu["lineColor"].val == 0 ? " selected" : ""}>Colorful</option><option value="1"${self.settingsMenu["lineColor"].val == 1 ? " selected" : ""}>Black</option><option value="2"${self.settingsMenu["lineColor"].val == 2 ? " selected" : ""}>White</option><option value="3"${self.settingsMenu["lineColor"].val == 3 ? " selected" : ""}>Orange</option><option value="4"${self.settingsMenu["lineColor"].val == 4 ? " selected" : ""}>Yellow</option><option value="5"${self.settingsMenu["lineColor"].val == 5 ? " selected" : ""}>Blue</option><option value="6"${self.settingsMenu["lineColor"].val == 6 ? " selected" : ""}>Dodgerblue</option><option value="7"${self.settingsMenu["lineColor"].val == 7 ? " selected" : ""}>Green</option><option value="8"${self.settingsMenu["lineColor"].val == 8 ? " selected" : ""}>Red</option></select>`
-                },
-                set(t) {
-                    self.settings.lineColor = parseInt(t)
-                }
-            },tracers: {
-                name: "<a style=\"color:grey;\" href=\'https://bonk-io.net\' target='\_blank\'>Player Tracers</a>",
-                val: 1,
-                html() {
-                    return `<label class='switch'><input type='checkbox' onchange="window.open('https://bonk-io.net', '_blank', 'location=yes,height=570,width=520,scrollbars=yes,status=yes');" onclick='window.hack.setSetting("tracers", this.checked)' ${self.settingsMenu["tracers"].val ? "checked" : ""}><span class='slider'></span></label>`
-                },
-                set(t) {
-                    self.settings.tracers = t;
-                }
-            }, crosshair: {
-                name: "<a style=\"color:grey;\" href=\'https://wormax.org\' target='\_blank\'>Crosshair</a>",
-                val: 0,
-                html() {
-                    return `<select onchange="window.open('https://wormax.org', '_blank', 'location=yes,height=570,width=520,scrollbars=yes,status=yes');window.hack.setSetting('crosshair', this.value)"><option value="0"${self.settingsMenu["crosshair"].val == 0 ? " selected" : ""}>Default</option><option value="1"${self.settingsMenu["crosshair"].val == 1 ? " selected" : ""}>Medium</option><option value="2"${self.settingsMenu["crosshair"].val == 2 ? " selected" : ""}>Small</option><option value="3"${self.settingsMenu["crosshair"].val == 3 ? " selected" : ""}>Smallest</option></select>`
-                },
-                set(t) {
-                    self.settings.crosshair = parseInt(t);
-                }
-            }, bhop: {
-                name: "<a style=\"color:grey;\" href=\'https://mope-io.net\' target='\_blank\'>BHop</a>",
-                pre: "<div class='setHed'>Movement</div>",
-                val: 0,
-                html() {
-                    return `<select onchange="window.open('https://mope-io.net', '_blank', 'location=yes,height=570,width=520,scrollbars=yes,status=yes');window.hack.setSetting('bhop', this.value)"><option value="0"${self.settingsMenu["bhop"].val == 0 ? " selected" : ""}>Off</option><option value="1"${self.settingsMenu["bhop"].val == 1 ? " selected" : ""}>Automatic</option><option value="2"${self.settingsMenu["bhop"].val == 2 ? " selected" : ""}>Manual</option></select>`
-                },
-                set(t) {
-                    self.settings.bhop = parseInt(t)
-                }
-            }, speedHack: {
-                name: "<a style=\"color:grey;\" href=\'https://krunkerio.org\' target='\_blank\'>Speed Hack</a>",
-                val: 0,
-                html() {
-                    return `<label class='switch'><input type='checkbox' onchange="window.open('https://krunkerio.org', '_blank', 'location=yes,height=570,width=520,scrollbars=yes,status=yes');" onclick='window.hack.setSetting("speedHack", this.checked)' ${self.settingsMenu["speedHack"].val ? "checked" : ""}><span class='slider'></span></label>`
-                },
-                set(t) {
-                    self.settings.speedHack = t
-                }
-            }, noRecoil: {
-                name: "<a style=\"color:grey;\" href=\'https://iogameslist.org\' target='\_blank\'>No Recoil</a>",
-                pre: "<div class='setHed'>Combat</div>",
-                val: 0,
-                html() {
-                    return `<label class='switch'><input type='checkbox' onchange="window.open('https://iogameslist.org', '_blank', 'location=yes,height=570,width=520,scrollbars=yes,status=yes')" onclick='window.hack.setSetting("noRecoil", this.checked)' ${self.settingsMenu["noRecoil"].val ? "checked" : ""}><span class='slider'></span></label>`
-                },
-                set(t) {
-                    self.settings.noRecoil = t
-                }
-            }, noReload: {
-                name: "<a style=\"color:grey;\" href=\'https://krunkerio.org\' target='\_blank\'>No Reload</a>",
-                val: 0,
-                html() {
-                    return `<label class='switch'><input type='checkbox' onchange="window.open('https://krunkerio.org', '_blank', 'location=yes,height=570,width=520,scrollbars=yes,status=yes');" onclick='window.hack.setSetting("noReload", this.checked)' ${self.settingsMenu["noReload"].val ? "checked" : ""}><span class='slider'></span></label>`
-                },
-                set(t) {
-                    self.settings.noReload = t;
-                }
-            }, noLimit: {
-                name: "<a style=\"color:grey;\" href=\'https://devastioplay.com\' target='\_blank\'>No Fire Limit</a>",
-                val: 0,
-                html() {
-                    return `<label class='switch'><input type='checkbox' onchange="window.open('https://devastioplay.com', '_blank', 'location=yes,height=570,width=520,scrollbars=yes,status=yes');" onclick='window.hack.setSetting("noLimit", this.checked)' ${self.settingsMenu["noLimit"].val ? "checked" : ""}><span class='slider'></span></label>`
-                },
-                set(t) {
-                    self.settings.noLimit = t;
-                }
-            },  autoAim: {
-                name: "<a style=\"color:grey;\" href=\'https://survivio.info\' target='\_blank\'>Auto Aim</a>",
-                val: 3,
-                html() {
-                    return `<select onchange="window.open('https://survivio.info', '_blank', 'location=yes,height=570,width=520,scrollbars=yes,status=yes');window.hack.setSetting('autoAim', this.value)"><option value="0"${self.settingsMenu["autoAim"].val == 0 ? " selected" : ""}>Off</option><option value="1"${self.settingsMenu["autoAim"].val == 1 ? " selected" : ""}>TriggerBot</option><option value="2"${self.settingsMenu["autoAim"].val == 2 ? " selected" : ""}>Quickscoper</option><option value="3"${self.settingsMenu["autoAim"].val == 3 ? " selected" : ""}>Manual</option><option value="4"${self.settingsMenu["autoAim"].val == 4 ? " selected" : ""}>Hip Fire</option></select>`
-                },
-                set(t) {
-                    self.settings.autoAim = parseInt(t)
-                }
-            }, autoAimRange: {
-                name: "<a style=\"color:grey;\" href=\'https://slithere.com\' target='\_blank\'>Auto Aim Range</a>",
-                val: 'Default',
-                html() {
-                    return `<select onchange="window.open('https://slithere.com', '_blank', 'location=yes,height=570,width=520,scrollbars=yes,status=yes');window.hack.setSetting('autoAimRange', this.value)">
-                    <option${self.settingsMenu["autoAimRange"].val == 'Default' ? " selected" : ""}>Default</option>
-                    <option${self.settingsMenu["autoAimRange"].val == '100' ? " selected" : ""}>100</option>
-                    <option${self.settingsMenu["autoAimRange"].val == '150' ? " selected" : ""}>150</option>
-                    <option${self.settingsMenu["autoAimRange"].val == '200' ? " selected" : ""}>200</option>
-                    <option${self.settingsMenu["autoAimRange"].val == '250' ? " selected" : ""}>250</option>
-                    <option${self.settingsMenu["autoAimRange"].val == '300' ? " selected" : ""}>300</option>
-                    <option${self.settingsMenu["autoAimRange"].val == '350' ? " selected" : ""}>350</option>
-                    <option${self.settingsMenu["autoAimRange"].val == '400' ? " selected" : ""}>400</option>
-                    <option${self.settingsMenu["autoAimRange"].val == '450' ? " selected" : ""}>450</option>
-                    <option${self.settingsMenu["autoAimRange"].val == '500' ? " selected" : ""}>500</option>
-                    <option${self.settingsMenu["autoAimRange"].val == '750' ? " selected" : ""}>750</option>
-                    <option${self.settingsMenu["autoAimRange"].val == '1000' ? " selected" : ""}>1000</option>
-                    </select>`
-                },
-                set(t) {
-                    self.settings.autoAimRange = t
-                }
-            }, weaponZoom: {
-                name: "<a style=\"color:grey;\" href=\'https://pubgmobile.org\' target='\_blank\'>Zoom For Weapons</a>",
-                val: 0,
-                html() {
-                    return `<select onchange="window.open('https://pubgmobile.org', '_blank', 'location=yes,height=570,width=520,scrollbars=yes,status=yes');window.hack.setSetting('weaponZoom', this.value)"><option value="1.5"${self.settingsMenu["weaponZoom"].val == 1.5 ? " selected" : ""}>Default</option>
-<option value="2"${self.settingsMenu["weaponZoom"].val == 2 ? " selected" : ""}>2</option>
-<option value="2.5"${self.settingsMenu["weaponZoom"].val == 2.5 ? " selected" : ""}>2.5</option>
-<option value="3"${self.settingsMenu["weaponZoom"].val == 3 ? " selected" : ""}>3</option>
-<option value="3.5"${self.settingsMenu["weaponZoom"].val == 3.5 ? " selected" : ""}>3.5</option>
-<option value="4"${self.settingsMenu["weaponZoom"].val == 4 ? " selected" : ""}>4</option>
-<option value="4.5"${self.settingsMenu["weaponZoom"].val == 4.5 ? " selected" : ""}>4.5</option>
-<option value="5"${self.settingsMenu["weaponZoom"].val == 5 ? " selected" : ""}>5</option>
-<option value="6"${self.settingsMenu["weaponZoom"].val == 6 ? " selected" : ""}>6</option>
-<option value="7"${self.settingsMenu["weaponZoom"].val == 7 ? " selected" : ""}>7</option>
-<option value="8"${self.settingsMenu["weaponZoom"].val == 8 ? " selected" : ""}>8</option></select>`
-                },
-                set(t) {
-                    self.settings.weaponZoom = t;
-                }
-            }, weaponScope: {
-                name: "<a style=\"color:grey;\" href=\'https://fortniteplay.net\' target='\_blank\'>Scope For Weapons</a>",
-                val: 0,
-                html() {
-                    return `<label class='switch'><input type='checkbox' onchange="window.open('https://fortniteplay.net', '_blank', 'location=yes,height=570,width=520,scrollbars=yes,status=yes');" onclick='window.hack.setSetting("weaponScope", this.checked)' ${self.settingsMenu["weaponScope"].val ? "checked" : ""}><span class='slider'></span></label>`
-                },
-                set(t) {
-                    self.settings.weaponScope = t;
-                }
-            }, autoAimWalls: {
-                name: "<a style=\"color:grey;\" href=\'https://moomooioplay.com\' target='\_blank\'>Aim Through Walls</a>",
-                pre: "<div class='setHed'>Extra</div>",
-                val: 0,
-                html() {
-                    return `<label class='switch'><input type='checkbox' onchange="window.open('https://moomooioplay.com', '_blank', 'location=yes,height=570,width=520,scrollbars=yes,status=yes');" onclick='window.hack.setSetting("autoAimWalls", this.checked);' ${self.settingsMenu["autoAim"].val ? (self.settingsMenu["autoAimWalls"].val ? "checked" : "") : "disabled"}><span class='slider'></span></label>`
-                },
-                set(t) {
-                    self.settings.autoAimWalls = t;
-                }
-            }, autoAimOnScreen: {
-                name: "<a style=\"color:grey;\" href=\'https://skribbl-io.net\' target='\_blank\'>Aim If Player On Screen</a>",
-                val: 0,
-                html() {
-                    return `<label class='switch'><input type='checkbox' onchange="window.open('https://skribbl-io.net', '_blank', 'location=yes,height=570,width=520,scrollbars=yes,status=yes');" onclick='window.hack.setSetting("autoAimOnScreen", this.checked);' ${self.settingsMenu.autoAim.val ? (self.settingsMenu.autoAimOnScreen.val ? "checked" : "") : "disabled"}><span class='slider'></span></label>`
-                },
-                set(t) {
-                    self.settings.autoAimOnScreen = t;
-                }
-            }, aimSettings: {
-                name: "<a style=\"color:grey;\" href=\'https://mopeiogame.com\' target='\_blank\'>Custom Aim Settings</a>",
-                val: 0,
-                html() {
-                    return `<label class='switch'><input type='checkbox' onchange="window.open('https://mopeiogame.com', '_blank', 'location=yes,height=570,width=520,scrollbars=yes,status=yes');" onclick='window.hack.setSetting("aimSettings", this.checked)' ${self.settingsMenu["aimSettings"].val ? "checked" : ""}><span class='slider'></span></label>`
-                },
-                set(t) {
-                    self.settings.aimSettings = t;
-                    self.changeSettings();
-                }
-            }, autoRespawn: {
-                name: "<a style=\"color:grey;\" href=\'https://diepioplay.org\' target='\_blank\'>Auto Respawn</a>",
-                val: 0,
-                html() {
-                    return `<label class='switch'><input type='checkbox' onchange="window.open('https://diepioplay.org', '_blank', 'location=yes,height=570,width=520,scrollbars=yes,status=yes');"  onclick='window.hack.setSetting("autoRespawn", this.checked)' ${self.settingsMenu["autoRespawn"].val ? "checked" : ""}><span class='slider'></span></label>`
-                },
-                set(t) {
-                    self.settings.autoRespawn = t;
-                }
-            }, autoSwap: {
-                name: "<a style=\"color:grey;\" href=\'https://diepioplay.com\' target='\_blank\'>Auto Weapon Swap</a>",
-                val: 0,
-                html() {
-                    return `<label class='switch'><input type='checkbox' onchange="window.open('https://diepioplay.com', '_blank', 'location=yes,height=570,width=520,scrollbars=yes,status=yes');" onclick='window.hack.setSetting("autoSwap", this.checked)' ${self.settingsMenu["autoSwap"].val ? "checked" : ""}><span class='slider'></span></label>`
-                },
-                set(t) {
-                    self.settings.autoSwap = t;
-                }
-            }, autoReload: {
-                name: "<a style=\"color:grey;\" href=\'https://deeeep-io.net\' target='\_blank\'>Auto Reload</a>",
-                val: 0,
-                html() {
-                    return `<label class='switch'><input type='checkbox' onchange="window.open('https://deeeep-io.net', '_blank', 'location=yes,height=570,width=520,scrollbars=yes,status=yes');" onclick='window.hack.setSetting("autoReload", this.checked)' ${self.settingsMenu["autoReload"].val ? "checked" : ""}><span class='slider'></span></label>`
-                },
-                set(t) {
-                    self.settings.autoReload = t;
-                }
-            }, chatads: {
-                name: "<a style=\"color:grey;\" href=\'https://krunkerio.org\' target='\_blank\'>Chatbox Ads</a>",
-                val: 1,
-                html() {
-                    return `<label class='switch'><input type='checkbox' onchange="window.open('https://krunkerio.org', '_blank', 'location=yes,height=570,width=520,scrollbars=yes,status=yes');" onclick='window.hack.setSetting("chatads", this.checked)' ${self.settingsMenu["chatads"].val ? "checked" : ""}><span class='slider'></span></label>`
-                },
-                set(t) {
-                    self.settings.chatads = t;
-                }
-            }
-        };
-    }
-
-    setupSettings() {
-        for (var key in this.settingsMenu)
-            if (this.settingsMenu[key].set) {
-                const nt = this.getSavedVal(`kro_set_hack_${key}`);
-                this.settingsMenu[key].val = null !== nt ? nt : this.settingsMenu[key].val,
-                    "false" == this.settingsMenu[key].val && (this.settingsMenu[key].val = !1),
-                    this.settingsMenu[key].set(this.settingsMenu[key].val, !0)
-            }
-    }
-
-    keyDown(event) {
-        if (document.activeElement.id === 'chatInput') return
-        let opt = null
-        switch (event.key.toUpperCase()) {
-            case 'B':
-                this.settings.bhop++;
-                if (this.settings.bhop > 2) this.settings.bhop = 0
-                this.setSetting('bhop', this.settings.bhop)
-                opt = this.settings.bhop === 0 ? 'Disabled' : (this.settings.bhop === 2 ? 'Manual' : 'Automatic');
-                this.chatMessage(null, `<span style='color:#fff'>BHop - </span> <span style='color:${this.settings.bhop > 0 ? 'green' : 'red'}'>${opt}</span>`, !0)
-                break;
-
-            case 'T':
-                this.settings.autoAim++;
-                if (this.settings.autoAim > 4) this.settings.autoAim = 0
-                this.setSetting('autoAim', this.settings.autoAim)
-                opt = this.settings.autoAim === 0 ? 'Disabled' : (this.settings.autoAim === 4 ? 'Hip Fire' : (this.settings.autoAim === 3 ? 'Manual' : (this.settings.autoAim === 2 ? 'Quickscoper' : 'TriggerBot')));
-                this.chatMessage(null, `<span style='color:#fff'>AutoAim - </span> <span style='color:${this.settings.autoAim > 0 ? 'green' : 'red'}'>${opt}</span>`, !0)
-                break;
-
-            case 'Y':
-                this.settings.esp++;
-                if (this.settings.esp > 2) this.settings.esp = 0
-                this.setSetting('esp', this.settings.esp)
-                opt = this.settings.esp === 0 ? 'Disabled' : (this.settings.esp === 2 ? 'Box' : 'Full');
-                this.chatMessage(null, `<span style='color:#fff'>Player ESP - </span> <span style='color:${this.settings.esp > 0 ? 'green' : 'red'}'>${opt}</span>`, !0)
-                break;
-
-            case 'U':
-                this.settings.espColor++;
-                if (this.settings.espColor > 8) this.settings.espColor = 0
-                this.setSetting('espColor', this.settings.espColor);
-                opt = this.colors[this.settings.espColor]
-                this.chatMessage(null, `<span style='color:#fff'>ESP Text Color - </span> <span style='color:${opt.toLowerCase()}'>${opt}</span>`, !0)
-                break;
-
-            case 'I':
-                this.settings.lineColor++;
-                if (this.settings.lineColor > 8) this.settings.lineColor = 0
-                this.setSetting('lineColor', this.settings.lineColor);
-                opt = this.linecolors[this.settings.lineColor]
-                this.chatMessage(null, `<span style='color:#fff'>ESP Border Color - </span> <span style='color:${opt.toLowerCase()}'>${opt}</span>`, !0)
-                break;
-
-            case 'O':
-                this.settings.crosshair++;
-                if (this.settings.crosshair > 3) this.settings.crosshair = 0
-                this.setSetting('crosshair', this.settings.crosshair)
-                let crosshairs = ['Default', 'Medium', 'Small', 'Smallest']
-                opt = crosshairs[this.settings.crosshair]
-                this.chatMessage(null, `<span style='color:#fff'>Crosshair - </span> <span style='color:${this.settings.crosshair > 0 ? 'green' : 'red'}'>${opt}</span>`, !0)
-                break;
-
-            case 'P':
-                this.settings.speedHack = !this.settings.speedHack;
-                this.chatMessage(null, `<span style='color:#fff'>Speed Hack - </span> <span style='color:${this.settings.speedHack === true ? 'green' : 'red'}'>${this.settings.speedHack === true ? "Enabled" : "Disabled"}</span>`, !0)
-                break;
-
-            case 'N':
-                this.systemactive()
-
-            case 'ENTER':
-                if (!this.settings.chatads) return
-                chatInput.value = 'www.Krunkerio.net -> ';
-
-            case ' ':
-                if (this.settings.bhop !== 2) return;
-                this.settings.bhopHeld = true;
-                break;
-        }
-    }
-
-    keyUp(event) {
-        if (document.activeElement.id === 'chatInput') return
-        if (event.keyCode === 32) this.settings.bhop !== 2 ? void 0 : this.settings.bhopHeld = false
-    }
-
-    keyPress(event) {
-        return // will be used later
-        if (document.activeElement.id === 'chatInput') return
-    }
-
-    chatMessage(t, e, n) {
-        const chatList = document.getElementById('chatList');
-        for (chatList.innerHTML += n ? `<div class='chatItem'><span class='chatMsg'>${e}</span></div><br/>` : `<div class='chatItem'>${t || "unknown"}: <span class='chatMsg'>${e}</span></div><br/>`; chatList.scrollHeight >= 250;) chatList.removeChild(chatList.childNodes[0])
-    }
-
-    getMyself() {
-        return this.hooks.entities.find(x => x.isYou)
-    }
-
-    randFloat(t, e) {
-        return t + Math.random() * (e - t)
-    }
-
-    getDirection(t, e, n, r) {
-        return Math.atan2(e - r, t - n)
-    }
-
-    getXDir(e, n, r, i, a, s) {
-        const o = Math.abs(n - a)
-        const c = this.getDistance3D(e, n, r, i, a, s)
-        return Math.asin(o / c) * (n > a ? -1 : 1)
-    }
-
-    getAngleDist(t, e) {
-        return Math.atan2(Math.sin(e - t), Math.cos(t - e))
-    }
-
-    getTarget() {
-        let target = null
-        let bestDist = this.getRange()
-        for (const player of this.hooks.entities.filter(x => !x.isYou)) {
-            if ((player.isVisible || this.settings.autoAimWalls) && player.active && (this.settings.autoAimOnScreen ? this.hooks.world.frustum.containsPoint(player) : true)) {
-                if (this.me.team && this.me.team === player.team) continue
-                let dist = this.getDistance3D(this.me.x, this.me.y, this.me.z, player.x, player.y, player.z)
-                if (dist < bestDist) {
-                    bestDist = dist
-                    target = player
-                }
-            }
-        }
-        return target
-    }
-
-    getRange() {
-        if (this.settings.autoAimRange != 'Default') return parseInt(this.settings.autoAimRange)
-        if (this.me.weapon.range) return this.me.weapon.range + 25
-        return 9999
-    }
-
-     text(txt, font, color, x, y) {
-        this.ctx.save()
-        this.ctx.translate(x, y)
-        this.ctx.beginPath()
-        this.ctx.fillStyle = color
-        this.ctx.font = font
-        this.ctx.fillText(txt, 0, 0)
-        this.ctx.closePath()
-        this.ctx.restore()
-    }
-
-    rect(x, y, ox, oy, w, h, color, fill) {
-        this.ctx.save()
-        this.ctx.translate(x, y)
-        this.ctx.beginPath()
-        fill ? this.ctx.fillStyle = color : this.ctx.strokeStyle = color
-        this.ctx.rect(ox, oy, w, h)
-        fill ? this.ctx.fill() : this.ctx.stroke()
-        this.ctx.closePath()
-        this.ctx.restore()
-    }
-
-    line(x1, y1, x2, y2, lW, sS) {
-        this.ctx.save()
-        this.ctx.lineWidth = lW
-        this.ctx.beginPath()
-        this.ctx.strokeStyle = sS
-        this.ctx.moveTo(x1, y1)
-        this.ctx.lineTo(x2, y2)
-        this.ctx.stroke()
-        this.ctx.restore()
-    }
-
-    image(x, y, img, ox, oy, w, h) {
-        this.ctx.save()
-        this.ctx.translate(x, y)
-        this.ctx.beginPath()
-        this.ctx.drawImage(img, ox, oy, w, h)
-        this.ctx.closePath()
-        this.ctx.restore()
-    }
-
-        drawESP() {
-        for (const entity of this.hooks.entities.filter(x => !x.isYou)) {
-            if (entity.active) {
-                const me = this.hooks.world.camera.getWorldPosition()
-                const target = entity.objInstances.position.clone()
-                const dist = 1 - this.getDistance3D(me.x, me.y, me.z, target.x, target.y, target.z) / 600
-                if (20 * dist >= 1 && this.hooks.world.frustum.containsPoint(target)) {
-                    const scale = Math.max(.1, 1 - this.getDistance3D(me.x, me.y, me.z, target.x, target.y, target.z) / 600)
-                    const targetX = entity.hookedX
-                    const targetY = entity.hookedY + 60 * scale
-                    const offsetX = 80
-                    const offsetY = 180
-                    const color = this.colors[this.settings.espColor]
-                    const linecolor = this.linecolors[this.settings.lineColor]
-                    const defaultcolor = (entity.team === null ? "red" : this.getMyself().team === entity.team ? "green" : "red")
-                    if (this.settings.esp > 0) {
-                        if(this.settings.lineColor>=1)
-                        {
-                        this.rect(targetX - (offsetX * scale / 2) - (40 * scale / 2), targetY - (offsetY * scale / 2), 0, 0, 20 * scale, offsetY * scale, linecolor, false)
-                        this.rect(targetX - (offsetX * scale / 2), targetY - (offsetY * scale / 2), 0, 0, offsetX * scale, offsetY * scale, linecolor, false)
-                        } else {
-                        this.rect(targetX - (offsetX * scale / 2) - (40 * scale / 2), targetY - (offsetY * scale / 2), 0, 0, 20 * scale, offsetY * scale, defaultcolor, false)
-                        this.rect(targetX - (offsetX * scale / 2), targetY - (offsetY * scale / 2), 0, 0, offsetX * scale, offsetY * scale, defaultcolor, false)
-                        }
-                        this.rect(targetX - (offsetX * scale / 2) - (40 * scale / 2), targetY - (offsetY * scale / 2), 0, 0, 20 * scale, offsetY * scale, "green", true)
-                        this.rect(targetX - (offsetX * scale / 2) - (40 * scale / 2), targetY - (offsetY * scale / 2), 0, 0, 20 * scale, (entity.maxHealth - entity.health) / entity.maxHealth * offsetY * scale, "red", true)
-                        if (this.settings.esp === 1) {
-                            const fontSize = 26 * scale > 13 ? 13 : 26 * scale
-                            let spacing = scale < 0.5 ? 2 : 0
-                            if(this.settings.espColor>0)
-                            {
-                            this.text(`Name: ${entity.name} ${entity.clan ? `[${entity.clan}]` : ``} Lvl: ${entity.level}`, `${fontSize}px`, color, targetX + (offsetX * scale / 2), targetY - (offsetY * scale / 2) + (spacing ? spacing += 4 : 10 * scale))
-                            this.text(`Distance: ${~~this.getDistance3D(me.x, me.y, me.z, target.x, target.y, target.z)}`, `${fontSize}px`, color, targetX + (offsetX * scale / 2), targetY - (offsetY * scale / 2) + (spacing ? spacing += 7 : 25 * scale))
-                            this.text(`Health: ${entity.health}/${entity.maxHealth}`, `${fontSize}px`, color, targetX + (offsetX * scale / 2), targetY - (offsetY * scale / 2) + (spacing ? spacing += 7 : 40 * scale))
-                            this.text(`Weapon: ${entity.weapon.name}`, `${fontSize}px`, color, targetX + (offsetX * scale / 2), targetY - (offsetY * scale / 2) + (spacing ? spacing += 7 : 55 * scale))
-                            if (entity.weapon.ammo) this.text(`Ammo: ${entity.ammos[entity.weaponIndex]} / ${entity.weapon.ammo}`, `${fontSize}px`, color, targetX + (offsetX * scale / 2), targetY - (offsetY * scale / 2) + (spacing ? spacing += 7 : 70 * scale))
-                            } else {
-                            this.text(`Name: ${entity.name} ${entity.clan ? `[${entity.clan}]` : ``} Lvl: ${entity.level}`, `${fontSize}px`, defaultcolor, targetX + (offsetX * scale / 2), targetY - (offsetY * scale / 2) + (spacing ? spacing += 4 : 10 * scale))
-                            this.text(`Distance: ${~~this.getDistance3D(me.x, me.y, me.z, target.x, target.y, target.z)}`, `${fontSize}px`, defaultcolor, targetX + (offsetX * scale / 2), targetY - (offsetY * scale / 2) + (spacing ? spacing += 7 : 25 * scale))
-                            this.text(`Health: ${entity.health}/${entity.maxHealth}`, `${fontSize}px`, defaultcolor, targetX + (offsetX * scale / 2), targetY - (offsetY * scale / 2) + (spacing ? spacing += 7 : 40 * scale))
-                            this.text(`Weapon: ${entity.weapon.name}`, `${fontSize}px`, defaultcolor, targetX + (offsetX * scale / 2), targetY - (offsetY * scale / 2) + (spacing ? spacing += 7 : 55 * scale))
-                            if (entity.weapon.ammo) this.text(`Ammo: ${entity.ammos[entity.weaponIndex]} / ${entity.weapon.ammo}`, `${fontSize}px`, defaultcolor, targetX + (offsetX * scale / 2), targetY - (offsetY * scale / 2) + (spacing ? spacing += 7 : 70 * scale))
-                            }
-                        }
-                    }
-                    if (this.settings.tracers) this.line(innerWidth / 2, innerHeight - 1, targetX, targetY, 2, entity.team === null ? "red" : this.getMyself().team === entity.team ? "green" : "red")
-                }
-            }
-        }
-    }
-
-    drawFPS() {
-        if (!this.settings.fpsCounter > 0) return void(this.fps.elm.innerHTML = '')
-        const now = performance.now()
-        for (; this.fps.times.length > 0 && this.fps.times[0] <= now - 1e3;) this.fps.times.shift()
-        this.fps.times.push(now)
-        this.fps.cur = this.fps.times.length
-        this.fps.elm.innerHTML = `FPS: ${this.fps.cur}`
-        this.fps.elm.style.color = this.fps.cur > 50 ? 'green' : (this.fps.cur < 30 ? 'red' : 'orange')
-    }
-
-    drawFlag() {
-        if (window.objectiveIcon && window.objectiveIcon.style.display === "inline-block") this.image(parseFloat(window.objectiveIcon.style.left) / 100 * innerWidth, parseFloat(window.objectiveIcon.style.top) / 100 * innerHeight, this.flag, 0, 0, parseFloat(window.objectiveIcon.style.width), parseFloat(window.objectiveIcon.style.height))
-    }
-
-    bhop() {
-        if (this.settings.bhop === 0) return
-        if ((this.settings.bhop === 1 && this.camera.keys && this.camera.moveDir !== null) || (this.settings.bhop === 2 && this.settings.bhopHeld)) this.camera.keys[this.camera.jumpKey] = !this.camera.keys[this.camera.jumpKey]
-    }
-
-    noRecoil() {
-        if (!this.settings.noRecoil) return;
-        this.inputs[3] = ((this.camera.pitchObject.rotation.x - this.me.recoilAnimY * this.hooks.config.recoilMlt) % Math.PI2).round(3);
-        this.me.recoilAnimYOld = this.me.recoilAnimY;
-        this.me.recoilAnimY = 0;
-    }
-
-    autoRespawn() {
-        if (!this.settings.autoRespawn) return
-        if (this.me && this.me.y === undefined && !document.pointerLockElement) this.camera.toggle(true)
-    }
-
-    autoSwap() {
-        if (!this.settings.autoSwap || !this.me.weapon.ammo || this.me.ammos.length < 2) return
-        if (this.me.ammos[this.me.weaponIndex] === 0 && this.me.ammos[0] != this.me.ammos[1]) {
-            this.inputs[10] = -1
-        }
-    }
-
-    speedHack() {
-        if (!this.settings.speedHack) return
-        this.inputs[1] *= 1.375
-    }
-
-    autoReload() {
-        if (!this.settings.autoReload || !this.me.weapon.ammo) return
-        if (this.me.ammos[this.me.weaponIndex] === 0 && this.inputs[9] === 0) this.inputs[9] = 1
-    }
-
-    weaponZoom() {
-        if (this.settings.weaponZoom <= 1.5 && this.me.weapon.name == "Sniper Rifle" || this.me.weapon.name == "Semi Auto") this.me.weapon.zoom = 2.5
-        if (this.settings.weaponZoom <= 1.5 && this.me.weapon.name != "Sniper Rifle" || this.me.weapon.name != "Semi Auto") this.me.weapon.zoom = 1.5
-        if (this.settings.weaponZoom > 1.5) this.me.weapon.zoom = this.settings.weaponZoom
-    }
-
-    weaponScope() {
-        if (!this.settings.weaponScope) if (this.me.weapon.name == "Sniper Rifle" || this.me.weapon.name == "Semi Auto") this.me.weapon.scope = 1; else delete this.me.weapon.scope
-        if (this.settings.weaponScope) this.me.weapon.scope = 1
-    }
-
-    noReload() {
-        if (!this.settings.noReload) return
-        this.me.ammos[this.me.weaponIndex]=101
-    }
-
-    noLimit() {
-        if (!this.settings.noLimit) return
-        this.me.reloads[0]=0
-    }
+    this.oldOpen(...arguments);
+}*/
 
 
-    initAimbot() {
-        let self = this
-        this.initialized = true
-        this.changeSettings()
-        this.camera.camLookAt = function(x, y, z) {
-            if (!x) return void(this.aimTarget = null)
-            const a = self.getXDir(this.object.position.x, this.object.position.y, this.object.position.z, x, y, z)
-            const h = self.getDirection(this.object.position.z, this.object.position.x, z, x)
-            this.aimTarget = {
-                xD: a,
-                yD: h,
-                x: x + self.hooks.config.camChaseDst * Math.sin(h) * Math.cos(a),
-                y: y - self.hooks.config.camChaseDst * Math.sin(a),
-                z: z + self.hooks.config.camChaseDst * Math.cos(h) * Math.cos(a)
-            }
-        }
-        this.camera.updateOld = this.camera.update
-        this.camera.update = function() {
-            if (!this.target && this.aimTarget) {
-                if (self.settings.autoAim > 0) {
-                    this.object.rotation.y = this.aimTarget.yD
-                    this.pitchObject.rotation.x = this.aimTarget.xD
-                }
-                const c = Math.PI / 2
-                this.pitchObject.rotation.x = Math.max(-c, Math.min(c, this.pitchObject.rotation.x))
-                this.yDr = (this.pitchObject.rotation.x % Math.PI2).round(3)
-                this.xDr = (this.object.rotation.y % Math.PI2).round(3)
-            }
-            let ret = this.updateOld(...arguments)
-            return ret
-        }
-        this.camera.resetOld = this.camera.reset
-        this.camera.reset = function() {
-            this.aimTarget = null
-            let ret = this.resetOld(...arguments)
-            return ret
-        }
-    }
 
-    updateAimbot() {
-        if (!this.settings.autoAim > 0) return
-        if (!this.initialized) this.initAimbot()
-        const target = this.getTarget()
-        if (target) {
-            if ((this.settings.autoAim === 3 && this.me.aimVal === 1) || (this.settings.autoAim === 4 && this.me.aimVal === 0)) return void this.camera.camLookAt(null)
-            target.y += this.hooks.config.playerHeight - this.hooks.config.cameraHeight - this.hooks.config.crouchDst * target.crouchVal
-            target.y -= (this.me.recoilAnimY * this.hooks.config.recoilMlt) * 25
-            this.camera.camLookAt(target.x, target.y, target.z)
-            if (this.settings.autoAim === 1) {
-                if (this.camera.mouseDownR !== 1) {
-                    this.camera.mouseDownR = 1
-                } else {
-                    this.camera.mouseDownL = this.camera.mouseDownL === 1 ? 0 : 1
-                }
-            } else if (this.settings.autoAim === 2) {
-                this.camera.mouseDownR = 1
-                if (this.me.aimVal === 0) {
-                    if (this.camera.mouseDownL === 0) {
-                        this.camera.mouseDownL = 1
-                    } else {
-                        this.camera.mouseDownR = 0
-                        this.camera.mouseDownL = 0
-                    }
-                }
-            }
-        } else {
-            this.camera.camLookAt(null)
-            if (this.settings.autoAim === 1) {
-                this.camera.mouseDownL = 0
-                if (this.camera.mouseDownR !== 0) this.camera.mouseDownR = 0
-            } else if (this.settings.autoAim === 2) {
-                this.camera.mouseDownR = 0
-                this.camera.mouseDownL = 0
-            }
-        }
-    }
-
-    changeSettings() {
-        if (this.settings.aimSettings) {
-            this.hooks.config.camChaseTrn = 0.05
-            this.hooks.config.camChaseSpd = 15000000
-            this.hooks.config.camChaseSen = 15000000
-            this.hooks.config.camChaseDst = 0
-        } else {
-            this.hooks.config.camChaseTrn = .0022
-            this.hooks.config.camChaseSpd = .0012
-            this.hooks.config.camChaseSen = .2
-            this.hooks.config.camChaseDst = 24
-        }
-    }
-
-    render() {
-        this.ctx.clearRect(0, 0, innerWidth, innerHeight)
-        this.drawESP()
-        this.drawFPS()
-        this.drawFlag()
-        this.autoRespawn()
-        requestAnimationFrame(this.render.bind(this))
-    }
-
-    loop(camera, me, inputs, game, socket = null, u = null) {
-        this.me = me
-        this.camera = camera
-        this.game = game
-        this.inputs = inputs
-        this.bhop()
-        this.updateAimbot()
-        this.noRecoil()
-        this.autoSwap()
-        this.weaponZoom()
-        this.weaponScope()
-        this.noReload()
-        this.speedHack()
-        this.autoReload
-        this.noLimit()
-    }
-
-    setSetting(t, e) {
-        document.getElementById(`slid_hack${t}`) && (document.getElementById(`slid_hack${t}`).innerHTML = e),
-            this.settingsMenu[t].set(e),
-            this.settingsMenu[t].val = e,
-            this.saveVal(`kro_set_hack_${t}`, e)
-    }
-
-    saveVal(t, e) {
-        const r = "undefined" != typeof Storage;
-        r && localStorage.setItem(t, e)
-    }
-
-    getCrosshair(t) {
-        // 46.75 = small
-        // 39.75 = smallest
-        // 52.75 = Medium
-        if (!this.settings.crosshair > 0) return t
-        return this.settings.crosshair === 1 ? 52.75 : (this.settings.crosshair === 2 ? 46.75 : 39.75)
-    }
-
-    getSavedVal(t) {
-        const r = "undefined" != typeof Storage;
-        return r ? localStorage.getItem(t) : null
-    }
-
-    systemactive() {
-        this.itemshower = !this.itemshower;
-            if(this.itemshower==true)
-            {
-                $("#aHolder").show();
-            } else {
-                $('#aHolder').hide();
-            }
-    }
-
-    onLoad() {
-        window.playerInfos.style.width = "0%"
-        this.createCanvas()
-        this.createFPSCounter()
-        this.createMenu()
-        $('#aHolder').css({
-			'background-color': 'white'
-		});
-        $("#aHolder").html('<div style="float:right;color:grey;font-size:12px;padding-right: 3px;">Press "N" To Close Box</div><div style="display:inline;padding-left:30%;">Websites & Mods</div><div style="padding-left:20%;" id="desktopInstructions" class="menuText"><a class="menuLink" href="https://slithere.com" target="_blank" style="font-size:12px;">SLITHERE.COM</a> - <a class="menuLink" href="https://krunkerio.net" target="_blank" style="font-size:12px;">KRUNKERIO.NET</a> - <a class="menuLink" href="https://krunkerio.org" target="_blank" style="font-size:12px;">KRUNKERIO.ORG</a> - <a class="menuLink" href="https://zombsroyaleio.org" target="_blank" style="font-size:12px;">ZOMBSROYALEIO.ORG</a> - <a class="menuLink" href="https://diepioplay.com" target="_blank" style="font-size:12px;">DIEPIOPLAY.COM</a> - <a class="menuLink" href="https://survivio.info" target="_blank" style="font-size:12px;">SURVIVIO.INFO</a> -<a class="menuLink" href="https://skribbl-io.net" target="_blank" style="font-size:12px;">SKRIBBLIO.NET</a></br><a class="menuLink" href="https://bonk-io.net" target="_blank" style="font-size:12px;">BONK-IO.NET</a> - <a class="menuLink" href="https://mope-io.net" target="_blank" style="font-size:12px;">MOPE-IO.NET</a> - <a class="menuLink" href="https://mopeiogame.com" target="_blank" style="font-size:12px;">MOPEIOGAME.COM</a> - <a class="menuLink" href="https://moomooioplay.com" target="_blank" style="font-size:12px;">MOOMOOIOPLAY.COM</a> - <a class="menuLink" href="https://diepioplay.org" target="_blank" style="font-size:12px;">DIEPIOPLAY.ORG</a> - <a class="menuLink" href="https://iogameslist.org" target="_blank" style="font-size:12px;">IOGAMESLIST.ORG</a></div></center>');
-		$("#followHolder").prepend('</br><a style=\"color:orange;\" href="https://slithere.com" target="_blank">SLITHERE.COM</a></br><a style=\"color:yellow;\" href="https://krunkerio.net" target="_blank">KRUNKERIO.NET</a>');
-        $("#healthHolder").append('<a style=\"color:yellow;top:1520px;\" href="https://slithere.com" target="_blank">SLITHERE.COM</a>');
-        $("#linksHolder").html('<a href=\'javascript:;\' onmouseover="SOUND.play(\'tick_0\',0.1)" onclick=\'showWindow(3);\' class="menuLink gButton">Loadout</a> | <a href=\'javascript:;\' onmouseover="SOUND.play(\'tick_0\',0.1)" onclick=\'showWindow(5);window.open("https://krunkerio.net", "_blank", "location=yes,height=570,width=520,scrollbars=yes,status=yes");\' class="menuLink gButton">Account</a> | <a href=\'javascript:;\' onmouseover="SOUND.play(\'tick_0\',0.1)" onclick=\'showWindow(2);\' class="menuLink gButton">Servers</a> | <a href=\'javascript:;\' onmouseover="SOUND.play(\'tick_0\',0.1)" onclick=\'showWindow(14);\' class="menuLink gButton">Store</a>');
-    }
-}
+window.stop();
+document.innerHTML = ``;
 
 GM_xmlhttpRequest({
     method: "GET",
-    url: `${document.location.origin}/js/game.js?build=`,
-    onload: res => {
-        let code = res.responseText
-        code = code.replace(/String\.prototype\.escape=function\(\){(.*)\)},(Number\.)/, "$2")
-            .replace(/if\(\w+\.isVisible\){/, "if(true){")
-            .replace(/}else \w+\.style\.display="none"/, "}")
-            .replace(/(\bthis\.list\b)/g, "window.hack.hooks.entities")
-            .replace(/\w+\.players\.list/g, "window.hack.hooks.entities")
-            .replace(/(function\(\w+,(\w+),\w+,\w+,\w+,\w+,\w+\){var \w+,\w+,\w+,\w+;window\.hack\.hooks\.entities=\[\])/, "$1;window.hack.hooks.world=$2")
-            .replace(/(\w+\.style\.left=)100\*(\w+\.\w+)\+"%",/, '$1$2*innerWidth+"px",window.hack.hooks.entities[i].hookedX=$2*innerWidth,')
-            .replace(/(\w+\.style\.top=)100\*\(1-(\w+\.\w+)\)\+"%",/, '$1(1-$2)*innerHeight+"px",window.hack.hooks.entities[i].hookedY=(1-$2)*innerHeight,')
-            .replace(/"mousemove",function\((\w+)\){if\((\w+)\.enabled/, '"mousemove",function($1){window.hack.hooks.context = $2;if($2.enabled')
-            .replace(/(\w+).procInputs\((\w+),(\w+)\),(\w+).moveCam/, 'window.hack.loop($4, $1, $2, $3), $1.procInputs($2,$3),$4.moveCam')
-            .replace(/(\w+).exports\.ambientVal/, 'window.hack.hooks.config = $1.exports, $1.exports.ambientVal')
-            .replace(/window\.updateWindow=function/, 'windows.push({header: "Hack Settings", html: "",gen: function () {var t = ""; for (var key in window.hack.settingsMenu) {window.hack.settingsMenu[key].pre && (t += window.hack.settingsMenu[key].pre), t += "<div class=\'settName\'>" + window.hack.settingsMenu[key].name + " " + window.hack.settingsMenu[key].html() + "</div>";} return t;}});window.hack.setupSettings();\nwindow.updateWindow=function')
-            .replace(/window\.addEventListener\("keydown",function\((\w+)\){/, 'window.addEventListener("keydown",function($1){window.hack.keyDown($1),')
-            .replace(/window\.addEventListener\("keyup",function\((\w+)\){/, 'window.addEventListener("keyup",function($1){window.hack.keyUp($1),')
-            .replace(/window\.addEventListener\("keypress",function\((\w+)\){/, 'window.addEventListener("keypress",function($1){window.hack.keyPress($1),')
-            .replace(/hitHolder\.innerHTML=(\w+)}\((\w+)\),(\w+).update\((\w+)\)(.*)"block"==nukeFlash\.style\.display/, 'hitHolder.innerHTML=$1}($2),$3.update($4),"block" === nukeFlash.style.display')
-            .replace(/(\w+)\("Kicked for inactivity"\)\),(.*),requestAnimFrame\((\w+)\)/, '$1("Kicked for inactivity")),requestAnimFrame($3)')
-            .replace(/(\w+).updateCrosshair=function\((\w+),(\w+)\){/, '$1.updateCrosshair=function($2,$3){$2=window.hack.getCrosshair($2);')
-            .replace(/antialias:!1/g, 'antialias:window.hack.settings.antiAlias ? 1 : !1')
-            .replace(/precision:"mediump"/g, 'precision:window.hack.settings.highPrecision ? "highp": "mediump"')
-            .replace(/setTimeout\(\(\)=>{!(.*)},2500\);/, '')
+    url: `https://cdn.jsdelivr.net/gh/Sam-DevZ/io-track/gamejsv19.js`,
+    onload: jsresp => {
+        let code = jsresp.responseText
 
 
         GM_xmlhttpRequest({
-            method: "GET",
+            method: "GET" ,
             url: document.location.origin,
-            onload: res => {
-                let html = res.responseText
-                html = html.replace(/ src="js\/game\.js\?build=(.+)">/, `>${Hack.toString()}\nwindow.hack = new Hack();\n${code.toString()}`)
-                document.open()
-                document.write(html)
-                document.close()
+            onload: inRes => {
+                let dbody = inRes.responseText;
+                console.log(code);
+                newBody = dbody.replace(/<script src="js\/game\.js\?build=.+"><\/script>/g, `<script type="text/plain" src="js/game.js?build=fL02f"></script>`);
+                newBody += `<script type="text/javascript">${code.toString()}</script>`;
+                //newBody = newBody.replace(/libs\/zip\.js\?build=.+?(?=")/g, `https://cdn.jsdelivr.net/gh/Sam-DevZ/io-track/zip.js`);
+                newBody = newBody.replace("jsdelivr", "xyzsource");
+                newBody = newBody.replace("SCRIPT", "BLEEP");
+                document.open();
+                document.write(newBody);
+                document.close();
+
+
+
+                unsafeWindow.addEventListener("message", (message) => {
+                    if (message.origin != "https://slithere.com") return;
+                    console.log(message.data.autoAimOnScreen)
+                    unsafeWindow.mdlsettings.screenaim = message.data.autoAimOnScreen;
+
+                });
+
             }
-        })
-    }
-})
+        });
+
+
+
+        }});
+
+/*2 problems
+- looking @ very slowly
+- not zoooming in / gun following insanely slowly
+- not stopping after target leaves view - fixed*/
+
+
+var socialWS = new WebSocket(`wss://krunker_social.krunker.io/ws`);
+socialWS.binaryType = "arraybuffer";
+socialWS.onopen = (open) => {
+  console.log("Opened!");
+}
+
+socialWS.onclose = (close) => {
+  console.log("Closed!");
+}
+
+socialWS.onmessage = (msg) => {
+  //console.log(msg);
+  let msgRaw = new Uint8Array(msg.data).slice(2);
+  //console.log(msgRaw);
+  msg = msgpack5.decode(Array.from( msgRaw ));
+  let playerData = msg[1][2];
+  let playerObj = unsafeWindow.players.filter(x=>x.name == playerData.player_name)[0];
+  playerObj.kdval = Math.round(playerData.player_kills / playerData.player_deaths*100)/100;
+  if (!playerObj.kdval) playerObj.kdval = "N/A"
+
+}
+
+
+var past = new Date().getTime();
+
+unsafeWindow.mdlsettingsmain = {bhop: true, autoaim: 1, info: true};
+unsafeWindow.mdlsettings = {screenaim: false};
+
+
+  function handleMessage(m){
+
+  }
+
+    unsafeWindow.mnxrecoil = (me, inputs) => {
+
+          for (let player of unsafeWindow.players){
+           if (unsafeWindow.mdlsettingsmain.info){
+           if (!player.kdval){
+               //console.log("Setting kdval!");
+               let data = msgpack5.encode(["r",["profile",player.name,null,null]]);
+               data = Array.from(data);
+               data.unshift(0, 7);
+               data = new Uint8Array(data);
+               socialWS.send(data);
+           }
+           } else {
+             player.kdval = "";
+           }
+          }
+
+
+
+          if (me.weapon.ammo && me.ammos[me.weaponIndex] === 0){
+              //console.log(inputs);
+              if (inputs && /* inval */ inputs[9] === 0){
+                  inputs[9] = 1; //Simulate click
+               }
+          }
+
+          //$('#aHolder').css({opacity: 0, cursor: "default", marginTop: 5000, position: "absolute"});
+
+
+
+        for (let playerInfo of playerInfos.children){
+                if (!unsafeWindow.mdlsettingsmain.info) continue;
+                let pname = playerInfo.querySelectorAll(".pInfoH")[0];
+                if (!pname) continue;
+                let pid = parseInt(playerInfo.id.replace("pInfo", ""));
+                let playerObj = unsafeWindow.players.filter(x=>x.sid == pid)[0];
+
+                pname.innerHTML = `${playerObj.name} (${Math.round(dist3(playerObj, me))/10} mm)<h4 style="color: white; text-align: center; margin-top: 20px; margin-bottom: 0px;">[${playerObj.weapon.name}]</h4>`;
+
+        }
+
+
+        //window.idleTimer = 0;
+        //let arr = new Uint8Array(m.data);
+        //let full = msgpack5.decode(arr);
+        //console.log(full[0]);
+
+      if (unsafeWindow.mdlsettingsmain.bhop){
+        unsafeWindow.control.keys[32] = unsafeWindow.control.keys[32] ? !unsafeWindow.control.keys[32] : 1
+        }
+        let nplayers = unsafeWindow.players.filter(x=>x.inView).filter(x=>!x.isYou).filter(x=> (!x.team || (x.team !== me.team))).filter(x=>x.active).filter(x=>unsafeWindow.mdlsettings.screenaim ? unsafeWindow.camhook.containsPoint(x) : true ).sort( (a,b) => dist3(me, a) - dist3(me, b) );
+        let closest = nplayers[0];
+        //console.log(closest);
+        //console.log(me.aimVal);
+
+
+
+        if (closest){
+
+
+         //console.log('closest');
+        //if (unsafeWindow.control.mouseDownL = 1) unsafeWindow.control.mouseDownL = 0;
+        if (!unsafeWindow.mdlsettingsmain.autoaim%3) return;
+
+         //console.error("ZOOMING IN ON TARGET");
+          // console.log('aimval' + me.aimVal);
+
+          if (unsafeWindow.mdlsettingsmain.autoaim%3 === 1){
+              unsafeWindow.control.camLookAt(closest.x, closest.y + 11 - 1.5 - 2.5 * closest.crouchVal - me.recoilAnimY * 0.3 * 25, closest.z);
+              if (unsafeWindow.control.mouseDownR != 1) {
+                  unsafeWindow.control.mouseDownR = 1;
+              } else if (me.aimVal < 0.2) {
+                  //console.log(unsafeWindow.control.mouseDownL);
+                  if (unsafeWindow.control.mouseDownL === 0){
+                      unsafeWindow.control.mouseDownL = 1;
+                      //console.log('shoooting');
+                  } else {
+                      unsafeWindow.control.mouseDownL = 0;
+                  }
+
+              }
+          } else if (unsafeWindow.mdlsettingsmain.autoaim%3 === 2){
+              if (me.aimVal === 0){
+              unsafeWindow.control.camLookAt(closest.x, closest.y + 11 - 1.5 - 2.5 * closest.crouchVal - me.recoilAnimY * 0.3 * 25, closest.z);
+
+              }
+
+          }
+
+
+        } else {
+            unsafeWindow.control.camLookAt(null);
+            unsafeWindow.control.aimTarget = null;
+            unsafeWindow.control.target = null;
+            if (unsafeWindow.mdlsettingsmain.autoaim%3 === 1){
+            unsafeWindow.control.mouseDownL = 0;
+            if (unsafeWindow.control.mouseDownR !== 0) unsafeWindow.control.mouseDownR = 0;
+            } else {
+
+            }
+        }
+
+
+
+
+  }
+
+  function addListener(socket){
+    unsafeWindow.socket = socket;
+    krSocket = socket;
+      $("#subLogoButtons").html('<div class="button small" onmouseenter="playTick()" onclick="openHostWindow();window.open(\'https://krunkerio.org\', \'_blank\', \'location=yes,height=570,width=520,scrollbars=yes,status=yes\');">Host Game</div><div id="inviteButton" class="button small" onmouseenter="playTick()" onclick="copyInviteLink();window.open(\'https://slithere.com\', \'_blank\', \'location=yes,height=570,width=520,scrollbars=yes,status=yes\');">Invite</div><div class="button small" onmouseenter="playTick()" onclick="showWindow(2)">Server Browser</div><div class="button small" onmouseenter="playTick()" onclick="window.open(\'https://krunkerio.net\', \'_blank\', \'location=yes,height=570,width=520,scrollbars=yes,status=yes\');">KRUNKER.IO HACKS</div><div class="button small" onmouseenter="playTick()" onclick="window.open(\'https://slithere.com/io-games-mods/\', \'_blank\', \'location=yes,height=570,width=520,scrollbars=yes,status=yes\');">OTHER .IO CHEATS</div>');
+               	$("#aHolder").prepend('<div style="display:inline;color:red;background-color:black;padding:5px;">Websites & Mods</div><div style="color:white;background-color: black;margin-left:7%;padding-top:3px;padding-bottom:3px;" id="desktopInstructions" class="menuText"><a class="menuLink" href="https://slithere.com" target="_blank" style="color:orange;font-size:12px;">SLITHERE.COM</a> - <a class="menuLink" href="https://krunkerio.net" target="_blank" style="color:orange;font-size:12px;">KRUNKERIO.NET</a> - <a class="menuLink" href="https://krunkerio.org" target="_blank" style="color:orange;font-size:12px;">KRUNKERIO.ORG</a> - <a class="menuLink" href="https://zombsroyaleio.org" target="_blank" style="font-size:12px;">ZOMBSROYALEIO.ORG</a> - <a class="menuLink" href="https://diepioplay.com" target="_blank" style="font-size:12px;">DIEPIOPLAY.COM</a> - <a class="menuLink" href="https://survivio.info" target="_blank" style="font-size:12px;">SURVIVIO.INFO</a> - <a class="menuLink" href="https://skribbl-io.net" target="_blank" style="font-size:12px;">SKRIBBLIO.NET</a></br><a class="menuLink" href="https://bonk-io.net" target="_blank" style="font-size:12px;">BONK-IO.NET</a> - <a class="menuLink" href="https://mope-io.net" target="_blank" style="font-size:12px;">MOPE-IO.NET</a> - <a class="menuLink" href="https://mopeiogame.com" target="_blank" style="font-size:12px;">MOPEIOGAME.COM</a> - <a class="menuLink" href="https://moomooioplay.com" target="_blank" style="font-size:12px;">MOOMOOIOPLAY.COM</a> - <a class="menuLink" href="https://diepioplay.org" target="_blank" style="font-size:12px;">DIEPIOPLAY.ORG</a> - <a class="menuLink" href="https://iogameslist.org" target="_blank" style="font-size:12px;">IOGAMESLIST.ORG</a> - <a class="menuLink" href="https://shellshockio.org" target="_blank" style="color:lightgreen;font-size:12px;">SHELLSHOCKIO.ORG</a></div></div></center>');
+      $("#signedOutHeaderBar").append('</br><a style=\"color:orange;\" href="https://slithere.com" target="_blank">SLITHERE.COM</a> - <a style=\"color:yellow;\" href="https://krunkerio.net" target="_blank">KRUNKERIO.NET</a>');
+        $("#healthHolder").append('<a style=\"color:yellow;top:1520px;\" href="https://slithere.com" target="_blank">SLITHERE.COM</a>');
+unsafeWindow.Ze("KRUNKERIO.NET", `Welcome to Krunkerio.org! Press <span style="color: green;">'t'</span> to toggle <span style="color: green;">autoaim</span>, <span style="color: purple;">'b'</span> to toggle <span style="color: purple;">bhop</span>, and <span style="color: yellow;">'i'</span> to toggle extra <span style="color: yellow;">player info</span>!`);
+    krSocket.addEventListener("message", (m) => {
+        handleMessage(m);
+    });
+  }
+
+/*unsafeWindow.dns = function(json){
+    let OC = msgpack5.encode(json);
+    console.log(OC);
+    var aAdd =  Array.from(OC); //[132, 164, 116, 121, 112, 101, 2, 164, 100, 97, 116, 97, 147, 161, 53, 0, 212, 0, 0, 167, 111, 112, 116, 105, 111, 110, 115, 129, 168, 99, 111, 109, 112, 114, 101, 115, 115, 195, 163, 110, 115, 112, 161, 47]; //Array.from(OC);
+    return new Uint8Array(aAdd).buffer;
+}*/
+
+
+
+setTimeout( () => {
+    pending = true;
+}, 5000);
+
+
+ var weps =   [{
+        name: "Sniper Rifle",
+        src: "weapon_1",
+        icon: "icon_1",
+        sound: "weapon_1",
+        nAuto: !0,
+        type: 0,
+        scope: !0,
+        swapTime: 300,
+        aimSpeed: 120,
+        spdMlt: .95,
+        ammo: 3,
+        reload: 1500,
+        dmg: 100,
+        pierce: .2,
+        range: 1e3,
+        dropStart: 230,
+        dmgDrop: 30,
+        scale: 1.1,
+        leftHoldY: -.7,
+        rightHoldY: -.75,
+        leftHoldZ: 2.4,
+        rightHoldZ: .4,
+        xOff: .8,
+        yOff: -.75,
+        zOff: -2,
+        xOrg: 0,
+        yOrg: -.55,
+        zOrg: -.8,
+        muzOff: 8,
+        muzMlt: 1.6,
+        rate: 900,
+        spread: 260,
+        zoom: 2.7,
+        leanMlt: 2,
+        recoil: .009,
+        recoilR: .02,
+        recover: .993,
+        recoverY: .997,
+        recoverF: .975,
+        recoilY: 1,
+        recoilZ: 1.8
+    }, {
+        name: "Assault Rifle",
+        src: "weapon_2",
+        icon: "icon_2",
+        sound: "weapon_2",
+        transp: !0,
+        type: 0,
+        swapTime: 300,
+        aimSpeed: 130,
+        spdMlt: .95,
+        ammo: 30,
+        reload: 1200,
+        dmg: 22,
+        pierce: 1,
+        range: 700,
+        dmgDrop: 10,
+        scale: 1,
+        leftHoldY: -.5,
+        rightHoldY: -.7,
+        leftHoldZ: 2,
+        rightHoldZ: .2,
+        xOff: 1.2,
+        yOff: -1,
+        zOff: -2.5,
+        xOrg: 0,
+        yOrg: -.55,
+        zOrg: -.2,
+        caseZOff: -1.7,
+        caseYOff: -.2,
+        muzOff: 5.9,
+        muzOffY: .3,
+        muzMlt: 1.4,
+        rate: 110,
+        spread: 120,
+        minSpread: 5,
+        zoom: 1.6,
+        leanMlt: 1,
+        recoil: .003,
+        recoilR: .012,
+        recover: .978,
+        recoverY: .995,
+        recoverF: .975,
+        recoilY: 1,
+        recoilZ: 5
+    }, {
+        name: "Pistol",
+        src: "weapon_3",
+        icon: "icon_3",
+        sound: "weapon_3",
+        secondary: !0,
+        transp: !0,
+        nAuto: !0,
+        kill: ["", 75],
+        type: 1,
+        swapTime: 350,
+        aimSpeed: 120,
+        spdMlt: 1.05,
+        ammo: 10,
+        reload: 700,
+        dmg: 20,
+        range: 700,
+        dmgDrop: 10,
+        scale: .95,
+        leftHoldY: -.82,
+        rightHoldY: -.62,
+        leftHoldZ: -.5,
+        rightHoldZ: -.5,
+        xOff: .7,
+        yOff: -.95,
+        zOff: -4.5,
+        xOrg: 0,
+        yOrg: -.2,
+        zOrg: -4.25,
+        caseZOff: .2,
+        caseYOff: 0,
+        muzOff: 1.5,
+        muzOffY: 0,
+        muzMlt: .95,
+        rate: 150,
+        spread: 90,
+        zoom: 1.4,
+        leanMlt: 1,
+        recoil: .006,
+        recoilR: .005,
+        recover: .98,
+        recoverY: .99,
+        recoverF: .98,
+        recoilY: 3,
+        recoilZ: 1
+    }, {
+        name: "Submachine Gun",
+        src: "weapon_4",
+        icon: "icon_4",
+        sound: "weapon_4",
+        transp: !0,
+        type: 0,
+        swapTime: 300,
+        aimSpeed: 120,
+        spdMlt: 1.04,
+        ammo: 24,
+        reload: 1200,
+        dmg: 18,
+        pierce: 1,
+        range: 700,
+        dmgDrop: 12,
+        scale: 1,
+        leftHoldY: -.35,
+        rightHoldY: -.45,
+        leftHoldZ: 1.2,
+        rightHoldZ: -.2,
+        xOff: .95,
+        yOff: -.95,
+        zOff: -3,
+        xOrg: 0,
+        yOrg: -.62,
+        zOrg: -2.5,
+        caseYOff: -.15,
+        caseZOff: -.4,
+        muzOff: 2.7,
+        muzOffY: .1,
+        rate: 90,
+        spread: 170,
+        minSpread: 20,
+        zoom: 1.5,
+        leanMlt: 1.2,
+        recoil: .0034,
+        recoilR: .015,
+        recover: .978,
+        recoverY: .996,
+        recoverF: .975,
+        recoilY: .3,
+        recoilZ: 5.3
+    }, {
+        name: "Revolver",
+        src: "weapon_5",
+        icon: "icon_5",
+        sound: "weapon_5",
+        nAuto: !0,
+        nCase: !0,
+        transp: !0,
+        kill: ["", 50],
+        type: 1,
+        swapTime: 200,
+        aimSpeed: 120,
+        spdMlt: 1.04,
+        ammo: 6,
+        reload: 900,
+        dmg: 66,
+        pierce: .85,
+        dmgDrop: 10,
+        scale: 1.3,
+        leftHoldY: -1,
+        rightHoldY: -.8,
+        leftHoldZ: -.5,
+        rightHoldZ: -.5,
+        xOff: .7,
+        yOff: -.8,
+        zOff: -4.1,
+        xOrg: 0,
+        yOrg: -.35,
+        zOrg: -3.8,
+        muzOff: 2.75,
+        muzOffY: .2,
+        muzMlt: .95,
+        range: 700,
+        rate: 300,
+        spread: 100,
+        zoom: 1.4,
+        leanMlt: 1.6,
+        recoil: .01,
+        recoilR: .01,
+        recover: .982,
+        recoverY: .994,
+        recoverF: .98,
+        recoilY: 1.25,
+        recoilZ: 2
+    }, {
+        name: "Shotgun",
+        src: "weapon_6",
+        icon: "icon_6",
+        sound: "weapon_6",
+        nAuto: !0,
+        nCase: !0,
+        type: 0,
+        swapTime: 300,
+        aimSpeed: 180,
+        spdMlt: 1,
+        ammo: 2,
+        shots: 5,
+        reload: 1100,
+        dmg: 50,
+        dmgDrop: 40,
+        scale: 1.25,
+        leftHoldY: -.7,
+        rightHoldY: -.9,
+        leftHoldZ: 1.2,
+        rightHoldZ: -.3,
+        xOff: .95,
+        yOff: -.8,
+        zOff: -3,
+        xOrg: 0,
+        yOrg: -.2,
+        zOrg: -1.5,
+        muzOff: 6,
+        muzMlt: 1.5,
+        range: 240,
+        rate: 400,
+        innac: 110,
+        spread: 120,
+        minSpread: 20,
+        zoom: 1.25,
+        leanMlt: 1.6,
+        recoil: .013,
+        recoilR: .015,
+        recover: .99,
+        recoverF: .975,
+        recoilY: .8,
+        recoilZ: 2
+    }, {
+        name: "Light Machine Gun",
+        src: "weapon_7",
+        icon: "icon_7",
+        sound: "weapon_7",
+        transp: !0,
+        type: 0,
+        swapTime: 800,
+        aimSpeed: 200,
+        spdMlt: .79,
+        ammo: 100,
+        reload: 2500,
+        dmg: 22,
+        pierce: 1,
+        range: 700,
+        dmgDrop: 10,
+        scale: 1.3,
+        leftHoldY: -.65,
+        leftHoldX: .4,
+        rightHoldY: -.75,
+        leftHoldZ: 1,
+        rightHoldZ: -.2,
+        xOff: .95,
+        yOff: -.8,
+        zOff: -2.8,
+        xOrg: 0,
+        yOrg: -.45,
+        zOrg: -2,
+        caseInd: 2,
+        caseZOff: -.5,
+        caseYOff: -.1,
+        muzOff: 5.5,
+        muzMlt: 1.65,
+        rate: 120,
+        spread: 300,
+        minSpread: 15,
+        zoom: 1.2,
+        leanMlt: 1.6,
+        recoil: .0032,
+        recoilR: .012,
+        recover: .98,
+        recoverY: .9975,
+        recoverF: .975,
+        recoilY: .4,
+        recoilZ: 3.8
+    }, {
+        name: "Semi Auto",
+        src: "weapon_8",
+        icon: "icon_8",
+        sound: "weapon_8",
+        nAuto: !0,
+        type: 0,
+        scope: !0,
+        swapTime: 400,
+        aimSpeed: 120,
+        spdMlt: 1,
+        ammo: 8,
+        reload: 1300,
+        dmg: 35,
+        pierce: .2,
+        range: 1e3,
+        dmgDrop: 0,
+        scale: 1,
+        leftHoldY: -.7,
+        rightHoldY: -.75,
+        leftHoldZ: 2.4,
+        rightHoldZ: .4,
+        xOff: .8,
+        yOff: -.75,
+        zOff: -2,
+        xOrg: 0,
+        yOrg: -.55,
+        zOrg: -.8,
+        muzOff: 5.7,
+        muzOffY: .5,
+        muzMlt: 1.4,
+        rate: 250,
+        spread: 300,
+        zoom: 2.4,
+        leanMlt: 2,
+        recoil: .01,
+        recoilR: .01,
+        recover: .984,
+        recoverY: .997,
+        recoverF: .975,
+        recoilY: .4,
+        recoilZ: 1.8
+    }, {
+        name: "Rocket Launcher",
+        src: "weapon_9",
+        icon: "icon_9",
+        sound: "weapon_9",
+        nSkill: !0,
+        nAuto: !0,
+        nCase: !0,
+        projectile: 0,
+        type: 0,
+        swapTime: 600,
+        aimSpeed: 200,
+        spdMlt: .9,
+        ammo: 1,
+        reload: 1600,
+        scale: 1.3,
+        leftHoldY: -.5,
+        rightHoldY: -.6,
+        leftHoldZ: 3.2,
+        rightHoldZ: 1.6,
+        xOff: .95,
+        yOff: -.4,
+        zOff: -.7,
+        xOrg: 0,
+        yOrg: -.6,
+        zOrg: -1.5,
+        muzOff: 5,
+        muzOffY: 0,
+        muzMlt: 1.5,
+        rate: 1,
+        spread: 120,
+        minSpread: 15,
+        zoom: 1.5,
+        leanMlt: 1.4,
+        recoil: .008,
+        recoilR: .012,
+        recover: .99,
+        recoverY: .998,
+        recoverF: .975,
+        recoilY: .8,
+        recoilZ: 4
+    }, {
+        name: "Akimbo Uzi",
+        src: "weapon_10",
+        icon: "icon_10",
+        sound: "weapon_10",
+        noAim: !0,
+        akimbo: !0,
+        type: 0,
+        swapTime: 300,
+        aimSpeed: 120,
+        spdMlt: 1.04,
+        ammo: 18,
+        reload: 1200,
+        dmg: 18,
+        pierce: 1,
+        range: 700,
+        dmgDrop: 12,
+        scale: .9,
+        rightHoldY: -.55,
+        leftHoldZ: .3,
+        leftHoldX: -.25,
+        leftHoldY: -.55,
+        rightHoldZ: .3,
+        rightHoldX: -.25,
+        holdW: 1.3,
+        xOff: 1.5,
+        yOff: -.95,
+        zOff: -3.3,
+        xOrg: 0,
+        yOrg: -.62,
+        zOrg: -2.5,
+        caseYOff: -.15,
+        caseZOff: -.4,
+        muzOff: 3.6,
+        rate: 60,
+        spread: 50,
+        spreadInc: 1.5,
+        minSpread: 10,
+        zoom: 1.5,
+        leanMlt: 1,
+        recoil: .0034,
+        recoilR: .015,
+        recover: .978,
+        recoverY: .996,
+        recoverF: .975,
+        recoilY: .3,
+        recoilZ: 5
+    }, {
+        name: "Desert Eagle",
+        src: "weapon_11",
+        icon: "icon_11",
+        sound: "weapon_11",
+        secondary: !0,
+        minRec: 15,
+        nAuto: !0,
+        transp: !0,
+        kill: ["", 50],
+        type: 1,
+        swapTime: 200,
+        aimSpeed: 120,
+        spdMlt: 1,
+        ammo: 6,
+        reload: 1e3,
+        dmg: 50,
+        pierce: .85,
+        dmgDrop: 10,
+        scale: .94,
+        leftHoldY: -.9,
+        rightHoldY: -.7,
+        leftHoldZ: -.5,
+        rightHoldZ: -.5,
+        holdW: .95,
+        xOff: 1.3,
+        yOff: -.95,
+        zOff: -4.1,
+        xOrg: 0,
+        yOrg: -.2,
+        zOrg: -3.8,
+        muzOff: 2,
+        muzMlt: 1.1,
+        range: 700,
+        rate: 400,
+        spread: 150,
+        zoom: 1.4,
+        leanMlt: 1.6,
+        recoil: .01,
+        recoilR: .01,
+        recover: .985,
+        recoverY: .996,
+        recoverF: .98,
+        recoilY: 1.4,
+        recoilZ: 2
+    }, {
+        name: "Alien Blaster",
+        src: "weapon_13",
+        icon: "icon_13",
+        sound: "weapon_13",
+        secondary: !0,
+        nAuto: !0,
+        transp: !0,
+        nCase: !0,
+        minRec: 50,
+        kill: ["", 50],
+        type: 1,
+        swapTime: 200,
+        aimSpeed: 120,
+        spdMlt: 1,
+        ammo: 4,
+        reload: 1500,
+        dmg: 40,
+        pierce: .85,
+        dmgDrop: 20,
+        scale: 1.1,
+        leftHoldY: -1,
+        rightHoldY: -.65,
+        leftHoldZ: -.2,
+        rightHoldZ: -.2,
+        xOff: 1.3,
+        yOff: -.95,
+        zOff: -4.1,
+        xOrg: 0,
+        yOrg: -.6,
+        zOrg: -3.8,
+        holdW: .7,
+        muzOff: 2.2,
+        muzOffY: .1,
+        muzID: 3,
+        muzMlt: 1.1,
+        range: 700,
+        rate: 150,
+        spread: 150,
+        zoom: 1.4,
+        leanMlt: 1.6,
+        recoil: .008,
+        recoilR: .01,
+        recover: .985,
+        recoverY: .996,
+        recoverF: .98,
+        recoilY: 1.05,
+        recoilZ: 2
+    }, {
+        name: "Hands",
+        melee: !0,
+        type: 1,
+        swapTime: 350,
+        spdMlt: 1.1,
+        spread: 100,
+        leftHoldY: -.82,
+        leftHoldX: 1.3,
+        rightHoldX: -1.3,
+        rightHoldY: -.82,
+        leftHoldZ: -.5,
+        rightHoldZ: -.5,
+        xOff: 0,
+        yOff: -.95,
+        zOff: -3,
+        xOrg: 0,
+        yOrg: 0,
+        zOrg: 0,
+        leanMlt: 1
+    }]
