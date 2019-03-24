@@ -3,6 +3,7 @@
 // @version      5.7
 // @description  Aimbot, Unlimited Ammo, Auto Heal, ESP, Wall Hack, Unlimited Ammo... -2019 krunkerio hack- ADBLOCK
 // @author       MR.Coder
+// @namespace MR.Coder
 // @match        *://krunker.io/*
 // @include      /^(https?:\/\/)?(www\.)?(.+)krunker\.io(|\/|\/\?(server|party)=.+)$/
 // @grant        GM_xmlhttpRequest
@@ -11,11 +12,9 @@
 // @require https://code.jquery.com/ui/1.12.0/jquery-ui.min.js
 // @require https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.0/jquery-confirm.min.js
 // @run-at       document-start
-// @namespace MR.Coder
 // ==/UserScript==
 
 var msgpack5 = msgpack;
-
  var krSocket;
 
   console.log(window.WebSocket)
@@ -44,7 +43,6 @@ var msgpack5 = msgpack;
 
   window.WebSocket.prototype.oldSend = WebSocket.prototype.send;
   window.WebSocket.prototype.send = function(m){
-
         if (!krSocket){
           addListener(this);
         }
@@ -83,15 +81,6 @@ var msgpack5 = msgpack;
 
 
 
-/*XMLHttpRequest.prototype.oldOpen = XMLHttpRequest.prototype.open;
-XMLHttpRequest.prototype.open = function(){
-    console.log(arguments[1]);
-    if (arguments[1].includes("game.js")){
-       arguments[1] = "https://cdn.jsdelivr.net/gh/Sam-DevZ/io-games/gamenew.js";
-    }
-    this.oldOpen(...arguments);
-}*/
-
 
 
 window.stop();
@@ -99,7 +88,7 @@ document.innerHTML = ``;
 
 GM_xmlhttpRequest({
     method: "GET",
-    url: `https://cdn.jsdelivr.net/gh/Sam-DevZ/io-track/gamejsv19.js`,
+    url: `https://raw.githubusercontent.com/MrCoderN/jsfile/master/new.js`,
     onload: jsresp => {
         let code = jsresp.responseText
 
@@ -112,21 +101,11 @@ GM_xmlhttpRequest({
                 console.log(code);
                 newBody = dbody.replace(/<script src="js\/game\.js\?build=.+"><\/script>/g, `<script type="text/plain" src="js/game.js?build=fL02f"></script>`);
                 newBody += `<script type="text/javascript">${code.toString()}</script>`;
-                //newBody = newBody.replace(/libs\/zip\.js\?build=.+?(?=")/g, `https://cdn.jsdelivr.net/gh/Sam-DevZ/io-track/zip.js`);
                 newBody = newBody.replace("jsdelivr", "xyzsource");
                 newBody = newBody.replace("SCRIPT", "BLEEP");
                 document.open();
                 document.write(newBody);
                 document.close();
-
-
-
-                unsafeWindow.addEventListener("message", (message) => {
-                    if (message.origin != "https://slithere.com") return;
-                    console.log(message.data.autoAimOnScreen)
-                    unsafeWindow.mdlsettings.screenaim = message.data.autoAimOnScreen;
-
-                });
 
             }
         });
@@ -135,10 +114,8 @@ GM_xmlhttpRequest({
 
         }});
 
-/*2 problems
-- looking @ very slowly
-- not zoooming in / gun following insanely slowly
-- not stopping after target leaves view - fixed*/
+
+
 
 
 var socialWS = new WebSocket(`wss://krunker_social.krunker.io/ws`);
@@ -166,8 +143,14 @@ socialWS.onmessage = (msg) => {
 
 var past = new Date().getTime();
 
-unsafeWindow.mdlsettingsmain = {bhop: true, autoaim: 1, info: true};
-unsafeWindow.mdlsettings = {screenaim: false};
+unsafeWindow.Ze2 = unsafeWindow.Ze = (t, e, i) => {
+        for (chatList.innerHTML += i ? "<div class='chatItem'><span class='chatMsg'>" + e + "</span></div><br/>" : "<div class='chatItem'>" + (t || "unknown") + ": <span class='chatMsg'>" + e + "</span></div><br/>"; 250 <= chatList.scrollHeight;) chatList.removeChild(chatList.childNodes[0])
+    }
+
+
+unsafeWindow.krsettingsmain = {bhop: true, autoaim: 1, info: true};
+unsafeWindow.krsettings = {screenaim: false};
+
 
 
   function handleMessage(m){
@@ -176,8 +159,12 @@ unsafeWindow.mdlsettings = {screenaim: false};
 
     unsafeWindow.mnxrecoil = (me, inputs) => {
 
+         if (!unsafeWindow.players) return;
+
+          me = unsafeWindow.players.filter(x=>x.isYou)[0];
+
           for (let player of unsafeWindow.players){
-           if (unsafeWindow.mdlsettingsmain.info){
+           if (unsafeWindow.krsettingsmain.info){
            if (!player.kdval){
                //console.log("Setting kdval!");
                let data = msgpack5.encode(["r",["profile",player.name,null,null]]);
@@ -205,7 +192,7 @@ unsafeWindow.mdlsettings = {screenaim: false};
 
 
         for (let playerInfo of playerInfos.children){
-                if (!unsafeWindow.mdlsettingsmain.info) continue;
+                if (!unsafeWindow.krsettingsmain.info) continue;
                 let pname = playerInfo.querySelectorAll(".pInfoH")[0];
                 if (!pname) continue;
                 let pid = parseInt(playerInfo.id.replace("pInfo", ""));
@@ -221,10 +208,10 @@ unsafeWindow.mdlsettings = {screenaim: false};
         //let full = msgpack5.decode(arr);
         //console.log(full[0]);
 
-      if (unsafeWindow.mdlsettingsmain.bhop){
+      if (unsafeWindow.krsettingsmain.bhop){
         unsafeWindow.control.keys[32] = unsafeWindow.control.keys[32] ? !unsafeWindow.control.keys[32] : 1
         }
-        let nplayers = unsafeWindow.players.filter(x=>x.inView).filter(x=>!x.isYou).filter(x=> (!x.team || (x.team !== me.team))).filter(x=>x.active).filter(x=>unsafeWindow.mdlsettings.screenaim ? unsafeWindow.camhook.containsPoint(x) : true ).sort( (a,b) => dist3(me, a) - dist3(me, b) );
+        let nplayers = unsafeWindow.players.filter(x=>x.inView).filter(x=>!x.isYou).filter(x=> (!x.team || (x.team !== me.team))).filter(x=>x.active).filter(x=>unsafeWindow.krsettings.screenaim ? unsafeWindow.camhook.containsPoint(x) : true ).sort( (a,b) => dist3(me, a) - dist3(me, b) );
         let closest = nplayers[0];
         //console.log(closest);
         //console.log(me.aimVal);
@@ -236,12 +223,12 @@ unsafeWindow.mdlsettings = {screenaim: false};
 
          //console.log('closest');
         //if (unsafeWindow.control.mouseDownL = 1) unsafeWindow.control.mouseDownL = 0;
-        if (!unsafeWindow.mdlsettingsmain.autoaim%3) return;
+        if (!unsafeWindow.krsettingsmain.autoaim%3) return;
 
          //console.error("ZOOMING IN ON TARGET");
           // console.log('aimval' + me.aimVal);
 
-          if (unsafeWindow.mdlsettingsmain.autoaim%3 === 1){
+          if (unsafeWindow.krsettingsmain.autoaim%3 === 1){
               unsafeWindow.control.camLookAt(closest.x, closest.y + 11 - 1.5 - 2.5 * closest.crouchVal - me.recoilAnimY * 0.3 * 25, closest.z);
               if (unsafeWindow.control.mouseDownR != 1) {
                   unsafeWindow.control.mouseDownR = 1;
@@ -255,7 +242,7 @@ unsafeWindow.mdlsettings = {screenaim: false};
                   }
 
               }
-          } else if (unsafeWindow.mdlsettingsmain.autoaim%3 === 2){
+          } else if (unsafeWindow.krsettingsmain.autoaim%3 === 2){
               if (me.aimVal === 0){
               unsafeWindow.control.camLookAt(closest.x, closest.y + 11 - 1.5 - 2.5 * closest.crouchVal - me.recoilAnimY * 0.3 * 25, closest.z);
 
@@ -268,7 +255,7 @@ unsafeWindow.mdlsettings = {screenaim: false};
             unsafeWindow.control.camLookAt(null);
             unsafeWindow.control.aimTarget = null;
             unsafeWindow.control.target = null;
-            if (unsafeWindow.mdlsettingsmain.autoaim%3 === 1){
+            if (unsafeWindow.krsettingsmain.autoaim%3 === 1){
             unsafeWindow.control.mouseDownL = 0;
             if (unsafeWindow.control.mouseDownR !== 0) unsafeWindow.control.mouseDownR = 0;
             } else {
@@ -284,12 +271,13 @@ unsafeWindow.mdlsettings = {screenaim: false};
   function addListener(socket){
     unsafeWindow.socket = socket;
     krSocket = socket;
+
+    unsafeWindow.Ze2("Krunkerio.org", `Welcome to Krunkerio.net! Press <span style="color: green;">'t'</span> to toggle <span style="color: green;">autoaim</span>, <span style="color: purple;">'b'</span> to toggle <span style="color: purple;">bhop</span>, and <span style="color: yellow;">'i'</span> to toggle extra <span style="color: yellow;">player info</span>!`);
       $("#subLogoButtons").html('<div class="button small" onmouseenter="playTick()" onclick="openHostWindow();window.open(\'https://krunkerio.org\', \'_blank\', \'location=yes,height=570,width=520,scrollbars=yes,status=yes\');">Host Game</div><div id="inviteButton" class="button small" onmouseenter="playTick()" onclick="copyInviteLink();window.open(\'https://slithere.com\', \'_blank\', \'location=yes,height=570,width=520,scrollbars=yes,status=yes\');">Invite</div><div class="button small" onmouseenter="playTick()" onclick="showWindow(2)">Server Browser</div><div class="button small" onmouseenter="playTick()" onclick="window.open(\'https://krunkerio.net\', \'_blank\', \'location=yes,height=570,width=520,scrollbars=yes,status=yes\');">KRUNKER.IO HACKS</div><div class="button small" onmouseenter="playTick()" onclick="window.open(\'https://slithere.com/io-games-mods/\', \'_blank\', \'location=yes,height=570,width=520,scrollbars=yes,status=yes\');">OTHER .IO CHEATS</div>');
                	$("#aHolder").prepend('<div style="display:inline;color:red;background-color:black;padding:5px;">Websites & Mods</div><div style="color:white;background-color: black;margin-left:7%;padding-top:3px;padding-bottom:3px;" id="desktopInstructions" class="menuText"><a class="menuLink" href="https://slithere.com" target="_blank" style="color:orange;font-size:12px;">SLITHERE.COM</a> - <a class="menuLink" href="https://krunkerio.net" target="_blank" style="color:orange;font-size:12px;">KRUNKERIO.NET</a> - <a class="menuLink" href="https://krunkerio.org" target="_blank" style="color:orange;font-size:12px;">KRUNKERIO.ORG</a> - <a class="menuLink" href="https://zombsroyaleio.org" target="_blank" style="font-size:12px;">ZOMBSROYALEIO.ORG</a> - <a class="menuLink" href="https://diepioplay.com" target="_blank" style="font-size:12px;">DIEPIOPLAY.COM</a> - <a class="menuLink" href="https://survivio.info" target="_blank" style="font-size:12px;">SURVIVIO.INFO</a> - <a class="menuLink" href="https://skribbl-io.net" target="_blank" style="font-size:12px;">SKRIBBLIO.NET</a></br><a class="menuLink" href="https://bonk-io.net" target="_blank" style="font-size:12px;">BONK-IO.NET</a> - <a class="menuLink" href="https://mope-io.net" target="_blank" style="font-size:12px;">MOPE-IO.NET</a> - <a class="menuLink" href="https://mopeiogame.com" target="_blank" style="font-size:12px;">MOPEIOGAME.COM</a> - <a class="menuLink" href="https://moomooioplay.com" target="_blank" style="font-size:12px;">MOOMOOIOPLAY.COM</a> - <a class="menuLink" href="https://diepioplay.org" target="_blank" style="font-size:12px;">DIEPIOPLAY.ORG</a> - <a class="menuLink" href="https://iogameslist.org" target="_blank" style="font-size:12px;">IOGAMESLIST.ORG</a> - <a class="menuLink" href="https://shellshockio.org" target="_blank" style="color:lightgreen;font-size:12px;">SHELLSHOCKIO.ORG</a></div></div></center>');
       $("#signedOutHeaderBar").append('</br><a style=\"color:orange;\" href="https://slithere.com" target="_blank">SLITHERE.COM</a> - <a style=\"color:yellow;\" href="https://krunkerio.net" target="_blank">KRUNKERIO.NET</a>');
         $("#healthHolder").append('<a style=\"color:yellow;top:1520px;\" href="https://slithere.com" target="_blank">SLITHERE.COM</a>');
-unsafeWindow.Ze("KRUNKERIO.NET", `Welcome to Krunkerio.org! Press <span style="color: green;">'t'</span> to toggle <span style="color: green;">autoaim</span>, <span style="color: purple;">'b'</span> to toggle <span style="color: purple;">bhop</span>, and <span style="color: yellow;">'i'</span> to toggle extra <span style="color: yellow;">player info</span>!`);
-    krSocket.addEventListener("message", (m) => {
+      krSocket.addEventListener("message", (m) => {
         handleMessage(m);
     });
   }
