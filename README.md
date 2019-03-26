@@ -2,7 +2,9 @@
 • Aimbot (Triggerbot, Quickscoper, Manual, Hip fire) (Various Ranges)</br>
 • FPS Counter</br>
 • BHop (Automatic, Manual)</br>
-
+</br>
+Feel Free to DM to me https://instagram.com/aecicekdagi about issues.</br>
+You can also follow me.
 <h3>Last Updates</h3>
 https://krunkerio.net</br>
 https://krunkerio.org</br>
