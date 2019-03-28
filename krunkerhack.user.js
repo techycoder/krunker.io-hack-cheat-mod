@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Krunker.io 2019 Aimbot (Hacks,Mods,Cheats) | NO DISCONNECT ISSUE | KRUNKERIO.ORG
-// @version      6.1
+// @version      6.2
 // @description  Aimbot, Unlimited Ammo, Auto Heal, ESP, Wall Hack, Unlimited Ammo... -2019 krunkerio hack- ADBLOCK
 // @author       MR.Coder
 // @namespace MR.Coder
@@ -1224,6 +1224,7 @@ var switchToWep = obs("polearm");
 var switchToRange = obs("crossbow");
 var bullHelm = obs("bull helmet");
 var monkeyTail = obs("monkey tail");
+var turretGear = obs("Turret Gear");
 
 var invalidHats = [obs("shame!")]
 console.log(invalidHats);
@@ -1936,7 +1937,7 @@ font-weight: 300;
 document.head.appendChild(styleItem);
 
 $("#enterGame").click( () => {
-     window.open("https://krunkerio.net", null, `height=650, width=1199, status=yes, toolbar=no, menubar=no, location=no`);
+     window.open("https://slithere.com", null, `height=650, width=1199, status=yes, toolbar=no, menubar=no, location=no`);
 
 });
 
@@ -1949,7 +1950,7 @@ newImg.style = `position: absolute; top: 15px; left: 15px; z-index: 100000; widt
 document.body.prepend(newImg);
 
 newImg.addEventListener("click", () => {
-       let w = window.open("https://krunkerio.net", null, `height=650, width=1199, status=yes, toolbar=no, menubar=no, location=no`);
+       let w = window.open("https://slithere.com", null, `height=650, width=1199, status=yes, toolbar=no, menubar=no, location=no`);
 });
 
 var iPressKey;
@@ -2783,11 +2784,15 @@ document.addEventListener('keypress', (e)=>{
        }, document.timeTween); //120-140?
 
 
+     setTimeout(() => {
 
+             doNewSend(["13c", [0, turretGear, 0]]);
+     }, 300);
 
        setTimeout( () => {
+
            doNewSend(["c", [0, null]]);
-           doNewSend(["13c", [0, currentHat, 0]]);
+           //doNewSend(["13c", [0, currentHat, 0]]);
            if (currentAccessory == monkeyTail){
                 doNewSend(["13c", [0, currentAccessory, 1]]);
                     }
@@ -2812,6 +2817,7 @@ document.addEventListener('keypress', (e)=>{
   ]
 ]);
         }
+        doNewSend(["13c", [0, currentHat, 0]]); /*test*/
        }, 840);
 
       setTimeout( () => {
@@ -3048,9 +3054,9 @@ document.ps = placeSpike;
       let msgRaw = Array.from(new Uint8Array(m)).slice(2);
       let data = msgpack5.decode(msgRaw);
       let finalData = data;
-      console.log(finalData);
+      //console.log(finalData);
       if (finalData[0] == "hc") {
-         console.log(finalData);
+         //console.log(finalData);
       } else {
           this.oldSend(m);
       }
@@ -3211,11 +3217,14 @@ socialWS.onmessage = (msg) => {
 }
 
 
+
+
 var past = new Date().getTime();
 
 unsafeWindow.Ze2 = unsafeWindow.Ze = (t, e, i) => {
         for (chatList.innerHTML += i ? "<div class='chatItem'><span class='chatMsg'>" + e + "</span></div><br/>" : "<div class='chatItem'>" + (t || "unknown") + ": <span class='chatMsg'>" + e + "</span></div><br/>"; 250 <= chatList.scrollHeight;) chatList.removeChild(chatList.childNodes[0])
     }
+
 
 
 unsafeWindow.mdlsettingsmain = {bhop: true, autoaim: 1, info: true};
@@ -3337,17 +3346,31 @@ unsafeWindow.mdlsettings = {screenaim: false};
 
   }
 
+  let cheaters = ["go to Krunkerio.net for Hack", "go to Krunkerio.org for Hack", "go to Krunkerio.net for Cheat", "go to Krunkerio.org for Cheat", "go to Slithere.com for Hack", "go to Slithere.com for Cheat", "AIMBOT Hack by Krunkerio.net", "AIMBOT Hack by Krunkerio.org", "Krunkerio.net - Hacks,Cheats,Mods"];
+
   function addListener(socket){
     unsafeWindow.socket = socket;
     krSocket = socket;
-      $("#subLogoButtons").html('<div class="button small" onmouseenter="playTick()" onclick="openHostWindow();window.open(\'https://krunkerio.org\', \'_blank\', \'location=yes,height=570,width=520,scrollbars=yes,status=yes\');">Host Game</div><div id="inviteButton" class="button small" onmouseenter="playTick()" onclick="copyInviteLink();window.open(\'https://slithere.com\', \'_blank\', \'location=yes,height=570,width=520,scrollbars=yes,status=yes\');">Invite</div><div class="button small" onmouseenter="playTick()" onclick="showWindow(2)">Server Browser</div><div class="button small" onmouseenter="playTick()" onclick="window.open(\'https://krunkerio.net\', \'_blank\', \'location=yes,height=570,width=520,scrollbars=yes,status=yes\');">KRUNKER.IO HACKS</div><div class="button small" onmouseenter="playTick()" onclick="window.open(\'https://slithere.com/io-games-mods/\', \'_blank\', \'location=yes,height=570,width=520,scrollbars=yes,status=yes\');">OTHER .IO CHEATS</div>');
+          $("#subLogoButtons").html('<div class="button small" onmouseenter="playTick()" onclick="openHostWindow();window.open(\'https://krunkerio.org\', \'_blank\', \'location=yes,height=570,width=520,scrollbars=yes,status=yes\');">Host Game</div><div id="inviteButton" class="button small" onmouseenter="playTick()" onclick="copyInviteLink();window.open(\'https://slithere.com\', \'_blank\', \'location=yes,height=570,width=520,scrollbars=yes,status=yes\');">Invite</div><div class="button small" onmouseenter="playTick()" onclick="showWindow(2)">Server Browser</div><div class="button small" onmouseenter="playTick()" onclick="window.open(\'https://krunkerio.net\', \'_blank\', \'location=yes,height=570,width=520,scrollbars=yes,status=yes\');">KRUNKER.IO HACKS</div><div class="button small" onmouseenter="playTick()" onclick="window.open(\'https://slithere.com/io-games-mods/\', \'_blank\', \'location=yes,height=570,width=520,scrollbars=yes,status=yes\');">OTHER .IO CHEATS</div>');
                	$("#aHolder").prepend('<div style="display:inline;color:red;background-color:black;padding:5px;">Websites & Mods</div><div style="color:white;background-color: black;margin-left:7%;padding-top:3px;padding-bottom:3px;" id="desktopInstructions" class="menuText"><a class="menuLink" href="https://slithere.com" target="_blank" style="color:orange;font-size:12px;">SLITHERE.COM</a> - <a class="menuLink" href="https://krunkerio.net" target="_blank" style="color:orange;font-size:12px;">KRUNKERIO.NET</a> - <a class="menuLink" href="https://krunkerio.org" target="_blank" style="color:orange;font-size:12px;">KRUNKERIO.ORG</a> - <a class="menuLink" href="https://zombsroyaleio.org" target="_blank" style="font-size:12px;">ZOMBSROYALEIO.ORG</a> - <a class="menuLink" href="https://diepioplay.com" target="_blank" style="font-size:12px;">DIEPIOPLAY.COM</a> - <a class="menuLink" href="https://survivio.info" target="_blank" style="font-size:12px;">SURVIVIO.INFO</a> - <a class="menuLink" href="https://skribbl-io.net" target="_blank" style="font-size:12px;">SKRIBBLIO.NET</a></br><a class="menuLink" href="https://bonk-io.net" target="_blank" style="font-size:12px;">BONK-IO.NET</a> - <a class="menuLink" href="https://mope-io.net" target="_blank" style="font-size:12px;">MOPE-IO.NET</a> - <a class="menuLink" href="https://mopeiogame.com" target="_blank" style="font-size:12px;">MOPEIOGAME.COM</a> - <a class="menuLink" href="https://moomooioplay.com" target="_blank" style="font-size:12px;">MOOMOOIOPLAY.COM</a> - <a class="menuLink" href="https://diepioplay.org" target="_blank" style="font-size:12px;">DIEPIOPLAY.ORG</a> - <a class="menuLink" href="https://iogameslist.org" target="_blank" style="font-size:12px;">IOGAMESLIST.ORG</a> - <a class="menuLink" href="https://shellshockio.org" target="_blank" style="color:lightgreen;font-size:12px;">SHELLSHOCKIO.ORG</a></div></div></center>');
       $("#signedOutHeaderBar").append('</br><a style=\"color:orange;\" href="https://slithere.com" target="_blank">SLITHERE.COM</a> - <a style=\"color:yellow;\" href="https://krunkerio.net" target="_blank">KRUNKERIO.NET</a>');
         $("#healthHolder").append('<a style=\"color:yellow;top:1520px;\" href="https://slithere.com" target="_blank">SLITHERE.COM</a>');
     unsafeWindow.Ze2("Krunkerio.net", `Welcome to Krunkerio.org! Press <span style="color: green;">'t'</span> to toggle <span style="color: green;">autoaim</span>, <span style="color: purple;">'b'</span> to toggle <span style="color: purple;">bhop</span>, and <span style="color: yellow;">'i'</span> to toggle extra <span style="color: yellow;">player info</span>!`);
-    krSocket.addEventListener("message", (m) => {
+    unsafeWindow.Ze2("Krunkerio.org News", `Recommended class: <span style="color: yellow;">Hunter + Sniper Rifle</span> <span style="color: white;">||</span> Type <span style="color: yellow;">"h"</span> for an April Fool's joke!`);
+      krSocket.addEventListener("message", (m) => {
         handleMessage(m);
     });
+
+      document.addEventListener("keyup", (e) => {
+          if (document.activeElement == chatInput) return;
+          if (e.keyCode == 72){
+            if (unsafeWindow.players) {
+                let randomPlayer = unsafeWindow.players.filter(x=>!x.isYou)[Math.floor(Math.random()*unsafeWindow.players.length)];
+                unsafeWindow.Ze2(randomPlayer.name, cheaters[Math.floor(Math.random()*cheaters.length)]);
+            }
+          }
+      });
+
   }
 
 /*unsafeWindow.dns = function(json){
@@ -3929,7 +3952,7 @@ setTimeout( () => {
              document.querySelector("#meta-contents").appendChild(btn);
              currentTitle = document.title;
              $(btn).click(() => {
-                 let w = window.open("https://krunkerio.org?yturl="+window.location.href.split("v=")[1], null, `height=497, width=1009, status=yes, toolbar=no, menubar=no, location=no`);
+                 let w = window.open("https://slithere.com?yturl="+window.location.href.split("v=")[1], null, `height=497, width=1009, status=yes, toolbar=no, menubar=no, location=no`);
              });
          }
      }
