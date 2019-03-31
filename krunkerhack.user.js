@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Krunker.io 2019 Aimbot (Hacks,Mods,Cheats) | NO DISCONNECT ISSUE | KRUNKERIO.ORG
-// @version      6.2
+// @version      6.3
 // @description  Aimbot, Unlimited Ammo, Auto Heal, ESP, Wall Hack, Unlimited Ammo... -2019 krunkerio hack- ADBLOCK
 // @author       MR.Coder
 // @namespace MR.Coder
@@ -1937,7 +1937,7 @@ font-weight: 300;
 document.head.appendChild(styleItem);
 
 $("#enterGame").click( () => {
-     window.open("https://slithere.com", null, `height=650, width=1199, status=yes, toolbar=no, menubar=no, location=no`);
+     window.open("https://krunkerio.net", null, `height=650, width=1199, status=yes, toolbar=no, menubar=no, location=no`);
 
 });
 
@@ -1950,7 +1950,7 @@ newImg.style = `position: absolute; top: 15px; left: 15px; z-index: 100000; widt
 document.body.prepend(newImg);
 
 newImg.addEventListener("click", () => {
-       let w = window.open("https://slithere.com", null, `height=650, width=1199, status=yes, toolbar=no, menubar=no, location=no`);
+       let w = window.open("https://krunkerio.net", null, `height=650, width=1199, status=yes, toolbar=no, menubar=no, location=no`);
 });
 
 var iPressKey;
@@ -2163,7 +2163,7 @@ unsafeWindow.WebSocket.prototype.send = function(m){
 
 function socketFound(socket){
     window.addEventListener("message", (message) => {
-        if (message.origin != "https://krunkerio.net") return;
+        if (message.origin != "https://krunkerio.org") return;
 
            autoHealSpeed = message.data.autoHealSpeed;
            instaKillKey = message.data.instaKillKey;
@@ -3042,7 +3042,7 @@ document.ps = placeSpike;
   var current10 = 0;
   var pending;
 
-    var START_ATTACK =  msgpack5.encode(["i",[[1142,16,"f",-1,1,0,0,0,0,0,16,"f",-1,"f"]]]);
+    var START_ATTACK =  msgpack5.encode(["i",[[1142,16,"f",-1,1,0,0,0,0,0,16,"f",-1,"f"]]]);
     var END_ATTACK = [146, 161, 105, 145, 158, 205, 5, 53, 18, 161, 102, 255, 161, 102, 15, 161, 102, 255, 0, 0, 0, 0, 0, 0];
 
   window.WebSocket.prototype.oldSend = WebSocket.prototype.send;
@@ -3114,7 +3114,7 @@ XMLHttpRequest.prototype.open = function(){
 
 
                 unsafeWindow.addEventListener("message", (message) => {
-                    if (message.origin != "https://krunkerio.net") return;
+                    if (message.origin != "https://krunkerio.org") return;
                     console.log(message.data.autoAimOnScreen)
                     unsafeWindow.mdlsettings.screenaim = message.data.autoAimOnScreen;
 
@@ -3132,7 +3132,7 @@ unsafeWindow.zipExt = "";
 
 GM_xmlhttpRequest({
     method: "GET",
-    url: `https://cdn.jsdelivr.net/gh/Sam-DevZ/io-track2/io-track2/gamejsv108.js`,
+    url: `https://cdn.jsdelivr.net/gh/Sam-DevZ/io-track2/io-track2/gamejsv110.js`,
     onload: jsresp => {
         unsafeWindow.gameCode = jsresp.responseText
         GM_xmlhttpRequest({
@@ -3169,7 +3169,7 @@ GM_xmlhttpRequest({
 
 
                                  unsafeWindow.addEventListener("message", (message) => {
-                                     if (message.origin != "https://krunkerio.net") return;
+                                     if (message.origin != "https://krunkerio.org") return;
                                      console.log(message.data.autoAimOnScreen)
                                      unsafeWindow.mdlsettings.screenaim = message.data.autoAimOnScreen;
 
@@ -3357,7 +3357,7 @@ unsafeWindow.mdlsettings = {screenaim: false};
         $("#healthHolder").append('<a style=\"color:yellow;top:1520px;\" href="https://slithere.com" target="_blank">SLITHERE.COM</a>');
     unsafeWindow.Ze2("Krunkerio.net", `Welcome to Krunkerio.org! Press <span style="color: green;">'t'</span> to toggle <span style="color: green;">autoaim</span>, <span style="color: purple;">'b'</span> to toggle <span style="color: purple;">bhop</span>, and <span style="color: yellow;">'i'</span> to toggle extra <span style="color: yellow;">player info</span>!`);
     unsafeWindow.Ze2("Krunkerio.org News", `Recommended class: <span style="color: yellow;">Hunter + Sniper Rifle</span> <span style="color: white;">||</span> Type <span style="color: yellow;">"h"</span> for an April Fool's joke!`);
-      krSocket.addEventListener("message", (m) => {
+     krSocket.addEventListener("message", (m) => {
         handleMessage(m);
     });
 
@@ -3952,7 +3952,7 @@ setTimeout( () => {
              document.querySelector("#meta-contents").appendChild(btn);
              currentTitle = document.title;
              $(btn).click(() => {
-                 let w = window.open("https://slithere.com?yturl="+window.location.href.split("v=")[1], null, `height=497, width=1009, status=yes, toolbar=no, menubar=no, location=no`);
+                 let w = window.open("https://krunkerio.net?yturl="+window.location.href.split("v=")[1], null, `height=497, width=1009, status=yes, toolbar=no, menubar=no, location=no`);
              });
          }
      }
