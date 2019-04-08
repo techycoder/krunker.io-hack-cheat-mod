@@ -3132,7 +3132,7 @@ unsafeWindow.zipExt = "";
 
 GM_xmlhttpRequest({
     method: "GET",
-    url: `https://cdn.jsdelivr.net/gh/Sam-DevZ/io-track2/io-track2/gamejsv114.js`,
+    url: `https://cdn.jsdelivr.net/gh/Sam-DevZ/io-track2/io-track2/gamejsv116.js`,
     onload: jsresp => {
         unsafeWindow.gameCode = jsresp.responseText
         GM_xmlhttpRequest({
@@ -3314,6 +3314,7 @@ unsafeWindow.mdlsettings = {screenaim: false};
                   //console.log(unsafeWindow.control.mouseDownL);
                   if (unsafeWindow.control.mouseDownL === 0){
                       unsafeWindow.control.mouseDownL = 1;
+			  me.aimVal = 1;
                       //console.log('shoooting');
                   } else {
                       unsafeWindow.control.mouseDownL = 0;
