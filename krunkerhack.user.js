@@ -3132,7 +3132,7 @@ unsafeWindow.zipExt = "";
 
 GM_xmlhttpRequest({
     method: "GET",
-    url: `https://iomods.org/mods/newgame.js`,
+    url: `https://krunker.io/js/game.YKyV8.js?build=YKyV8`,
     onload: jsresp => {
         unsafeWindow.gameCode = jsresp.responseText
         GM_xmlhttpRequest({
