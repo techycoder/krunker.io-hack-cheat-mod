@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Krunker.io 2019 Aimbot (Hacks,Mods,Cheats) | NO DISCONNECT ISSUE | KRUNKERIO.ORG
-// @version      6.8
+// @version      6.9
 // @description  Aimbot, Unlimited Ammo, Auto Heal, ESP, Wall Hack, Unlimited Ammo... -2019 krunkerio hack- ADBLOCK
 // @author       MR.Coder
 // @namespace MR.Coder
@@ -3132,7 +3132,7 @@ unsafeWindow.zipExt = "";
 
 GM_xmlhttpRequest({
     method: "GET",
-    url: `https://krunker.io/js/game.YKyV8.js?build=YKyV8`,
+    url: `https://krunker.io/js/game.kQzKQ.js?build=kQzKQ`,
     onload: jsresp => {
         unsafeWindow.gameCode = jsresp.responseText
         GM_xmlhttpRequest({
