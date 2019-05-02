@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Krunker.io 2019 Aimbot (Hacks,Mods,Cheats) | NO DISCONNECT ISSUE | KRUNKERIO.ORG
-// @version      7.1
+// @version      7.1.1
 // @description  Aimbot, Unlimited Ammo, Auto Heal, ESP, Wall Hack, Unlimited Ammo... -2019 krunkerio hack- ADBLOCK
 // @author       MR.Coder
 // @namespace MR.Coder
@@ -12,7 +12,6 @@
 // @match        *://krunker.io/*
 // @match        http://dev.moomoo.io/*
 // @match        *sandbox.moomoo.io/*
-// @include      /^(https?:\/\/)?(www\.)?(.+)krunker\.io(|\/|\/\?(server|party)=.+)$/
 // @grant        GM_xmlhttpRequest
 // @require https://greasyfork.org/scripts/368273-msgpack/code/msgpack.js?version=598723
 // @require http://code.jquery.com/jquery-3.3.1.min.js
