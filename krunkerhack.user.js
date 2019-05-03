@@ -3546,7 +3546,7 @@ class Krunkbot {
       `;
         });
         infoBox.innerHTML = `
-      <div class="krunkbotTitle">Krunkbot</div>
+      <div class="krunkbotTitle">Krunkerio.org - Krunkerio.net</div>
       ${moduleLines.join('')}
     `.trim();
     }
