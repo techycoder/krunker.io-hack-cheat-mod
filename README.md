@@ -1,9 +1,9 @@
 <h3>Features</h3>
-Zoom IN/OUT
-Change Background
-Rainbow Background
-Show FPS ON/OFF
-Adblock Plus+
+Zoom IN/OUT</br>
+Change Background</br>
+Rainbow Background</br>
+Show FPS ON/OFF</br>
+Adblock Plus+</br>
 Rainbow Game, Colorful Game Play, FPS, Adblock
 </br>
 Feel Free to DM to me https://instagram.com/aecicekdagi about issues.</br>
