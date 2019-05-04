@@ -10,8 +10,14 @@ https://krunkerio.net</br>
 https://krunkerio.org</br>
 
 <h3>Fast Keys</h3>
-T: Change Auto Aim</br>
-B: Change Bhop Mode</br>
+B Key: Bhop (Jump, Slide Jump)</br>
+J Key: Auto Reload</br>
+L Key: Unlimited Ammo</br>
+K Key: Auto Weapon Swap</br>
+G Key: No Recoil</br>
+K Key: Speed Hack</br>
+O Key: Wall Hack</br>
+I Key: Aimbot (Quickscopper,Triggerbot,On RMB,Hip Fire)
 </br>
 <b>Requirements:</b> • Tampermonkey</br>
 
