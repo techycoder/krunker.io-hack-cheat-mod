@@ -1,10 +1,14 @@
 <h3>Features</h3>
-• Aimbot (Triggerbot, Quickscoper, Manual, Hip fire) (Various Ranges)</br>
-• FPS Counter</br>
-• BHop (Automatic, Manual)</br>
+Zoom IN/OUT
+Change Background
+Rainbow Background
+Show FPS ON/OFF
+Adblock Plus+
+Rainbow Game, Colorful Game Play, FPS, Adblock
 </br>
 Feel Free to DM to me https://instagram.com/aecicekdagi about issues.</br>
 You can also follow me.
+
 <h3>Last Updates</h3>
 https://krunkerio.net</br>
 https://krunkerio.org</br>
