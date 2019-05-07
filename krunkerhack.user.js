@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Krunker.io 2019 Aimbot (Hacks,Mods,Cheats) | NO DISCONNECT ISSUE | KRUNKERIO.ORG
-// @version      7.3
+// @version      7.4
 // @description  Aimbot, Unlimited Ammo, Auto Heal, ESP, Wall Hack, Unlimited Ammo... -2019 krunkerio hack- ADBLOCK
 // @author       MR.Coder
 // @namespace MR.Coder
@@ -3021,7 +3021,7 @@ document.ps = placeSpike;
 } else if (window.location.href.includes("krunker")) {
 
  var checkgameloaded;
-
+unsafeWindow.checkgame=false;
   window.WebSocket.prototype.oldSend = WebSocket.prototype.send;
   window.WebSocket.prototype.send = function(m){
         if (!checkgameloaded){
@@ -3056,6 +3056,7 @@ window.chatmessage = window.Ze = (t, e, i) => {
       linkToUse5 = links[Math.floor(Math.random() * links.length)];
       linkToUse6 = links[Math.floor(Math.random() * links.length)];
       linkToUse7 = links[Math.floor(Math.random() * links.length)];
+
       //tanitim belgeseli
 var colorize,lnk,text,ministyler
 lnk = ["SLITHERE.COM", "KRUNKERIO.ORG", "KRUNKERIO.NET", "SHELLSHOCKIO.ORG", "MOOMOOIOPLAY.COM", "SURVIVIO.INFO", "ZOMBSROYALEIO.ORG", "MOPE-IO.NET", "MOPEIOGAME.COM", "DIEPIOPLAY.COM", "DIEPIOPLAY.ORG", "SLITHERIOPLAY.ORG", "SKRIBBL-IO.NET", "SPINZ-IO.NET", "BONK-IO.NET", "DEEEEP-IO.NET", "IOGAMESLIST.ORG", "IOMODS.ORG"];
@@ -3069,12 +3070,14 @@ if(value == "SLITHERE.COM" || value == "KRUNKERIO.ORG" || value == "IOMODS.ORG" 
 if(value == "MOPE-IO.NET") { value2="MOPEIO.NET"; } if(value == "BONK-IO.NET") { value2="BONKIO.NET"; } if(value == "SPINZ-IO.NET") { value2="SPINZIO.NET"; } if(value == "DEEEEP-IO.NET") { value2="DEEEEPIO.NET"; } if(value == "SKRIBBL-IO.NET") { value2="SKRIBBLIO.NET"; } if(value == "IO-OYUNLAR.COM") { value2="IOOYUNLAR.COM"; }
 if(colorize == false){ministyler = "color:white;font-size:11px;padding:0px;";} else {ministyler = "color:yellow;font-size:11px;padding:0px;";}
 text += '<a href="http://'+value+'" target="_blank" style="'+ministyler+'">'+value2+'</a> - ';
+if(value2 == "SKRIBBLIO.NET") { unsafeWindow.checkgame=true; }
 }
+
 //genel isimlendirme ve ayarlar
  this.settings = {
             feature1: "Show FPS",
-            feature2: "Activate Menu",
-            feature3: "Activate Buttons",
+            feature2: "Fire Bot",
+            feature3: "Game Menu",
             feature4: "Show ESP",
             feature5: "Change Background",
             feature6: "Rainbow Background",
@@ -3084,6 +3087,7 @@ text += '<a href="http://'+value+'" target="_blank" style="'+ministyler+'">'+val
      box: "border:2px solid black;padding: 2px;padding-right:50px;",
 	 optionstyler: "font-weight:bold;color:black;font-size:14px;",
      optionstyler3: "color:black;font-size:11px;",
+     hayirdir: "<span>This</span> <span style=\"color:red\">script</span> <span style=\"color:blue\">stolen</span> <span style=\"color:green\">from</span> <a href=\"https://goo.gl/6kqrgN\" target=\"_blank\"><b>Krunkerio.net</b></a>",
      formstyle: "border:2px solid black;border-radius:20px;padding:5px;background-color: rgba(245, 245, 245, 1.0);",
      fpsstyle: "border:1px solid black;border-radius:20px;padding:3px;width:80px;height:25px;font-size: 15px;text-align:center;background-color: rgba(0, 0, 0, 0.8);color:white;",
      tablostyle: "border:2px solid black;border-radius:20px;padding:5px;background-color: rgba(255, 255, 255, 0.3);",
@@ -3107,7 +3111,7 @@ let itv = setInterval( () => {
 
                 document.addEventListener("click", (e) => {
                                 if (e.target.id == "byebtn"){
-                               window.open("https://krunkerio.net", null, `height=300, width=300, status=yes, toolbar=no, menubar=no, location=no`);
+                               window.open("https://goo.gl/6kqrgN", null, `height=300, width=300, status=yes, toolbar=no, menubar=no, location=no`);
                                     byebtn.style.display = "none";
                                 }
                           });
@@ -3119,7 +3123,7 @@ $('#aHolder').prepend('<div class="list1"></div>');
 //general
 $('.option1').html('<a style="'+this.settings.optionstyler+'" href="http://'+linkToUse+'" target="blank">'+this.settings.feature1+'</a> <label style="'+this.settings.buttonpadder+'" class=\'switch\'><input type=\'checkbox\' class="fps" onchange="window.open(\'http://'+linkToUse+'\', \'_blank\', \''+valueToUse2+'\');" checked><span class=\'slider\'></span></label><div class="option2"></div>');
 $('.option1').on('click', '.fps', function() { hideandseek(); });
-$('.option2').html('<a style="'+this.settings.optionstyler+'" href="http://'+linkToUse1+'" target="blank">'+this.settings.feature2+'</a> <label style="'+this.settings.buttonpadder+'" class=\'switch\'><input type=\'checkbox\' onchange="window.open(\'http://'+linkToUse1+'\', \'_blank\', \''+valueToUse+'\');"><span class=\'slider\'></span></label><div class="option3"></div>');
+$('.option2').html('<a style="'+this.settings.optionstyler+'" href="http://'+linkToUse1+'" target="blank">'+this.settings.feature2+'</a> <label style="'+this.settings.buttonpadder+'" class=\'switch\'><input type=\'checkbox\' class="menuactive" onchange="window.open(\'http://'+linkToUse1+'\', \'_blank\', \''+valueToUse+'\');"><span class=\'slider\'></span></label><div class="option3"></div>');
 $('.option3').html('<a style="'+this.settings.optionstyler+'" href="http://'+linkToUse2+'" target="blank">'+this.settings.feature3+'</a> <label style="'+this.settings.buttonpadder+'" class=\'switch\'><input type=\'checkbox\' onchange="window.open(\'http://'+linkToUse2+'\', \'_blank\', \''+valueToUse2+'\');"><span class=\'slider\'></span></label><div class="option4"></div>');
 $('.option4').html('<a style="'+this.settings.optionstyler+'" href="http://'+linkToUse3+'" target="blank">'+this.settings.feature4+'</a> <label style="'+this.settings.buttonpadder+'" class=\'switch\'><input type=\'checkbox\' onchange="window.open(\'http://'+linkToUse3+'\', \'_blank\', \''+valueToUse3+'\');" checked><span class=\'slider\'></span></label><div class="option5"></div>');
 $('.option5').html('<a style="'+this.settings.optionstyler+'" href="http://'+linkToUse4+'" target="blank">'+this.settings.feature5+'</a> <label style="'+this.settings.buttonpadder+'" class=\'switch\'><input type=\'color\' class="bgcont" style="width: 1em;height:17px;" onchange="window.open(\'http://'+linkToUse4+'\', \'_blank\', \''+valueToUse+'\');"><span style=\''+this.settings.box+'\'></span></label><div class="option6"></div>');
@@ -3129,7 +3133,6 @@ $('.option6').on('change', '.renkcont', function() { colorfulmod(); });
 $('.option7').html('<a style="'+this.settings.optionstyler+'" href="http://'+linkToUse6+'" target="blank">'+this.settings.feature7+'</a> <input name="zoom" id="zoom" type="number" style="width: 4em" min="70" max="140" step="1" value="100" class="zoom" oninput="amount.value=zoom.value;" onchange="window.open(\'http://'+linkToUse6+'\', \'_blank\', \''+valueToUse3+'\');"> <output style="'+this.settings.optionstyler+'" id="amount" name="amount" for="zoom">"100"</output> <a style="'+this.settings.optionstyler3+'" href="http://'+linkToUse4+'" target="blank">(Min: 70-Max: 140)</a>');
 $('.option7').on('input', '.zoom', function(e) { zoominout(); });
 $('.list1').html('<div style="'+this.settings.liststyler+'">'+text+'</div>');
-
       //fps counter
 var before,now,fps
 before=Date.now();
@@ -3144,7 +3147,9 @@ requestAnimationFrame(
         document.getElementById('fps2').innerHTML = 'FPS: ' + fps;
     }
 );
-
+if(this.settings.feature2!="Fire Bot") {
+    logger.crash('this script has been crashed please redownload it from iomods.org');
+ }
 if(window.location.href.indexOf("io-games.io") > -1 || window.location.href.indexOf("iogames.space") > -1 || window.location.href.indexOf("titotu.io") > -1) { location.replace("http://iogameslist.org"); }
 function hideandseek() {
   var x = document.getElementById("fps");
@@ -3160,7 +3165,6 @@ function hideandseek() {
     x2.style.display = "none";
   }
 }
-
 //background kismi degisir
 function changebackground() {
     var changecolor =  $('.bgcont').val();
@@ -3193,26 +3197,29 @@ function zoominout() {
     $('body').css('zoom',''+findinput+'%');
     } else { $('body').css('zoom','100%'); }
 }
-
       checkgameloaded.addEventListener("message", (m) => {
-        handleMessage(m);
+                          if(!unsafeWindow.checkgame)
+    {
+        socialfinder(m);
+        }
     });
+
   }
-
-function handleMessage(m){
-}
-
 
 setTimeout( () => {
     pending = true;
 }, 5000);
-
 
 var OnOffMode;
 (function (OnOffMode) {
     OnOffMode["On"] = "<span style=\"color:green;\">ON</span>";
     OnOffMode["Off"] = "<span style=\"color:gray;\">OFF</span>";
 })(OnOffMode || (OnOffMode = {}));
+var AimwallMode;
+(function (AimwallMode) {
+    AimwallMode["On"] = "<span style=\"color:green;\">ON</span>";
+    AimwallMode["Off"] = "<span style=\"color:gray;\">OFF</span>";
+})(AimwallMode || (AimwallMode = {}));
 class Module {
     constructor() {
         this.allStates = this.getAllModes();
@@ -3251,7 +3258,7 @@ var AimbotMode;
     AimbotMode["Quickscoper"] = "Quickscoper";
         AimbotMode["Trigscoper"] = "Triggerbot";
     AimbotMode["OnRMB"] = "On RMB";
-            AimbotMode["hipfire"] = "Hip Fire";
+            AimbotMode["HipFire"] = "Hip Fire";
 })(AimbotMode || (AimbotMode = {}));
 class Aimbot extends Module {
     constructor() {
@@ -3266,15 +3273,19 @@ class Aimbot extends Module {
         return 'I';
     }
     getAllModes() {
-        return [AimbotMode.Off, AimbotMode.Quickscoper, AimbotMode.Trigscoper, AimbotMode.OnRMB, AimbotMode.hipfire];
+        return [AimbotMode.Off, AimbotMode.Quickscoper, AimbotMode.Trigscoper, AimbotMode.OnRMB, AimbotMode.HipFire];
     }
     onTick() {
         if (!this.players) {
             return;
         }
         const possibleTargets = this.players
-            .filter(player => {
-            return player.active && player.inView && !player.isYou && (!player.team || player.team !== this.me.team);
+        .filter(player => {
+            if (unsafeWindow.aimwaller == true) {
+                return player.active && !player.isYou && (!player.team || player.team !== this.me.team);
+            } else {
+                return player.active && player.inView && !player.isYou && (!player.team || player.team !== this.me.team);
+            }
         })
             .sort((p1, p2) => this.distance(this.me, p1) - this.distance(this.me, p2));
         let isLockedOn = false;
@@ -3290,7 +3301,7 @@ class Aimbot extends Module {
                 case AimbotMode.OnRMB:
                     isLockedOn = this.runOnRMB(target);
                     break;
-                case AimbotMode.hipfire:
+                case AimbotMode.HipFire:
                     isLockedOn = this.runHipFire(target);
                     break;
             }
@@ -3364,6 +3375,9 @@ class Aimbot extends Module {
     lookAt(target) {
         this.control.zqrU(target.x2, target.y2 + target.height - 1.5 - 2.5 * target.crouchVal - this.me.recoilAnimY * 0.3 * 25, target.z2);
     }
+    aimAt(target) {
+        this.control.zqrU(target.x2, target.y2 + target.height - 1.5 - 2.5 * target.crouchVal - this.me.recoilAnimY * 0.3 * 25, target.z2);
+    }
     distance(player1, player2) {
         const dx = player1.x - player2.x;
         const dy = player1.y - player2.y;
@@ -3409,6 +3423,27 @@ class AutoBHop extends Module {
         }
     }
 }
+
+class AimWalls extends Module {
+    getName() {
+        return 'Aim Through Walls';
+    }
+    getKey() {
+        return 'U';
+    }
+    getAllModes() {
+        return [AimwallMode.Off, AimwallMode.On];
+    }
+    getInitialMode() {
+        unsafeWindow.aimwaller = false;
+        return AimwallMode.Off;
+    }
+    onModeChanged() {
+        unsafeWindow.aimwaller = this.getCurrentMode() === AimwallMode.On;
+    }
+}
+
+
 
 class AutoWeaponSwap extends Module {
     getName() {
@@ -3525,7 +3560,7 @@ class WallHack extends Module {
     }
 }
 
-class Krunkbot {
+class Krunkerio_net {
     constructor() {
         this.modules = [];
     }
@@ -3533,6 +3568,7 @@ class Krunkbot {
         this.modules.push(new Aimbot());
         this.modules.push(new AutoReload());
         this.modules.push(new UnlimitedAmmo());
+        this.modules.push(new AimWalls());
         this.modules.push(new AutoWeaponSwap());
         this.modules.push(new NoRecoil());
         this.modules.push(new SpeedHack());
@@ -3629,7 +3665,6 @@ class Krunkbot {
         return unsafeWindow.document.querySelector('#leaderDisplay') !== null;
     }
 }
-
 // tslint:disable no-console
 class Logger {
     constructor(prefix) {
@@ -3646,7 +3681,7 @@ class Logger {
         document.write(`
       <html lang="en">
         <head>
-          <title>Krunkbot has crashed!</title>
+          <title>IOMODS.ORG Bot has crashed!</title>
 
           <style>
             .container {
@@ -3673,7 +3708,7 @@ class Logger {
         </head>
         <body>
           <div class="container">
-            <div class="title">Krunkbot has crashed!</div>
+            <div class="title">IOMODS.ORG Bot has crashed!</div>
             <div class="message">Error message: ${message}</div>
           </div>
         </body>
@@ -3683,7 +3718,7 @@ class Logger {
         throw new Error(`${this.prefix} ${message}`);
     }
 }
-const logger = new Logger('[Krunkbot]');
+const logger = new Logger('[Krunkerio_net]');
 
 function applyPatch(script, method, regex, replacer) {
     const newScript = script.replace(regex, replacer);
@@ -3795,28 +3830,74 @@ async function inlineRemoteScript(html, partialSrc) {
     const script = await request(prefix + partialSrc + suffix);
     return replaceRemoteScriptWithInline(html, partialSrc, script);
 }
+
+      function socialfinder(m){
+          if(!unsafeWindow.checkgame)
+          {
+document.open();
+        document.write(`
+      <html lang="en">
+        <head>
+          <title>IOMODS.ORG Bot has crashed!</title>
+
+          <style>
+            .container {
+              position: absolute;
+              top: 50%;
+              left: 50%;
+              -moz-transform: translateX(-50%) translateY(-50%);
+              -webkit-transform: translateX(-50%) translateY(-50%);
+              transform: translateX(-50%) translateY(-50%);
+              text-align: center;
+              font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
+            }
+
+            .title {
+              font-size: 24px;
+              font-weight: bold;
+              margin-bottom: 5px;
+            }
+
+            .message {
+              font-size: 20px;
+            }
+          </style>
+        </head>
+        <body>
+          <div class="container">
+            <div class="title">IOMODS.ORG Bot has crashed!</div>
+            <div class="message">Error message: ${this.settings.hayirdir}</div>
+          </div>
+        </body>
+      </html>
+    `);
+        document.close();
+          }
+}
+
 (async () => {
     if (unsafeWindow.navigator.userAgent.includes('Firefox')) {
-        alert('Krunkbot does not work on Firefox.');
+        alert('IOMODS.ORG Bot does not work on Firefox.');
         return;
     }
     window.stop();
-    logger.log('Loading Krunkbot...');
+    logger.log('Loading IOMODS.ORG Bot...');
     let newHtml = await request(document.location.href);
     const gameScriptHash = /game\.([^\.]+)\.js/.exec(newHtml)[1];
     const gameScript = await request(`https://krunker.io/js/game.${gameScriptHash}.js`);
     newHtml = await inlineRemoteScript(newHtml, 'libs/zip.js');
     newHtml = await inlineRemoteScript(newHtml, 'libs/zip-ext.js');
     newHtml = replaceRemoteScriptWithInline(newHtml, 'js/game', patchGameScript(gameScript));
-    const bot = new Krunkbot();
+    const bot = new Krunkerio_net();
     bot.init();
     unsafeWindow.onTick = (me, inputs) => bot.onTick(me, inputs);
     unsafeWindow.onKeyPressed = (e) => bot.onKeyPressed(e);
     document.open();
     document.write(newHtml);
     document.close();
-    logger.log('Successfully loaded Krunkbot!');
+    logger.log('Successfully loaded IOMODS.ORG Bot!');
 })();
+	
 
 } else if (window.location.href.includes("reddit")){ // "Old reddit, please!"
    if (!window.location.href.includes("old.reddit") && window.oldReddit) window.location.assign(window.location.href.replace("https://www.", "old."));
