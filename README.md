@@ -15,14 +15,16 @@ https://krunkerio.org</br>
 
 <h3>Fast Keys</h3>
 I Key: Aimbot (Quickscopper,Triggerbot,On RMB,Hip Fire)</br>
-B Key: Bhop (Jump, Slide Jump)</br>
-U Key: Aim Through Walls</br>
 J Key: Auto Reload</br>
+T Key: Auto Fire
+U Key: Aim Through Walls</br>
 L Key: Unlimited Ammo</br>
 H Key: Auto Weapon Swap</br>
 G Key: No Recoil</br>
 K Key: Speed Hack</br>
 O Key: Wall Hack</br>
+B Key: Bhop (Jump, Slide Jump)</br>
+X Key: Chatflood</br>
 </br>
 <b>Requirements:</b> • Tampermonkey</br>
 
