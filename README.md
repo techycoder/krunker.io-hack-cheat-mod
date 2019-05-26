@@ -1,6 +1,5 @@
 <h3>Features</h3>
-Show FPS ON/OFF</br>
-Adblock Plus+</br>
+Aimbot - Fps - Aim Range - Aim Position - Bunny Hop (slide jump) - Unlimited Ammo - Auto Reload - No Recoil - Change Background - Adblock
 </br>
 Feel Free to DM to me https://instagram.com/aecicekdagi about issues.</br>
 You can also follow me.
