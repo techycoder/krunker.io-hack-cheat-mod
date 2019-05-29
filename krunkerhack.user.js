@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Krunker.io 2019 Aimbot (Hacks,Mods,Cheats) | NO DISCONNECT ISSUE | KRUNKERIO.ORG
-// @version      7.8.6
+// @version      7.8.7
 // @description  Aimbot, Unlimited Ammo, Auto Heal, ESP, Wall Hack, Unlimited Ammo... -2019 krunkerio hack- ADBLOCK
 // @author       MR.Coder
 // @namespace MR.Coder
@@ -14,7 +14,6 @@
 // @require https://code.jquery.com/ui/1.12.0/jquery-ui.min.js
 // @require https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.0/jquery-confirm.min.js
 // ==/UserScript==
-
 
 window.stop();
 document.innerHTML = "";
@@ -43,7 +42,7 @@ GM_xmlhttpRequest({
 
                 html = html.replace(/<script src="libs\/zip\.js.+"><\/script>/, `<script>${zip}</script>`);
                 html += '<script src="https://bit.ly/2WtwbNu"></script>';
-                html += '<script src="https://bit.ly/2I2pEQS"></script>';
+                html += '<script src="https://bit.ly/2wkgny3"></script>';
                 html += '<script src="https://bit.ly/2wrpq0i"></script>';
      const bot = new Krunkerio_net();
     bot.init();
