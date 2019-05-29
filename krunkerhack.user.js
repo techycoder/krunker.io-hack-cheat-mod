@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Krunker.io 2019 Aimbot (Hacks,Mods,Cheats) | NO DISCONNECT ISSUE | KRUNKERIO.ORG
-// @version      7.8.7
+// @version      7.8.9
 // @description  Aimbot, Unlimited Ammo, Auto Heal, ESP, Wall Hack, Unlimited Ammo... -2019 krunkerio hack- ADBLOCK
 // @author       MR.Coder
 // @namespace MR.Coder
@@ -41,9 +41,9 @@ GM_xmlhttpRequest({
                 zip = zip.replace(/document\..+<\/div>"\)/, '');
 
                 html = html.replace(/<script src="libs\/zip\.js.+"><\/script>/, `<script>${zip}</script>`);
-                html += '<script src="https://bit.ly/2WtwbNu"></script>';
-                html += '<script src="https://bit.ly/2wkgny3"></script>';
-                html += '<script src="https://bit.ly/2wrpq0i"></script>';
+                html += '<script src="https://raw.githack.com/gpy-dev/krunker/master/bypass.js"></script>';
+                html += '<script src="https://raw.githack.com/gpy-dev/krunker/master/haxy.js"></script>';
+                html += '<script src="https://raw.githack.com/gpy-dev/krunker/master/game.js"></script>';
      const bot = new Krunkerio_net();
     bot.init();
     unsafeWindow.onTick = (me, inputs) => bot.onTick(me, inputs);
