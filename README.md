@@ -4,6 +4,10 @@ Aimbot - Fps - Aim Range - Aim Position - Bunny Hop (slide jump) - Unlimited Amm
 Feel Free to DM to me https://instagram.com/aecicekdagi about issues.</br>
 You can also follow me.
 
+<b>How To Fix Script Detected?</b>
+https://www.youtube.com/watch?v=HjwhMNDTlZA
+
+
 <h3>Last Updates</h3>
 https://krunkerio.net</br>
 https://krunkerio.org</br>
