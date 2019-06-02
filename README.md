@@ -1,8 +1,8 @@
 <h3>Features</h3>
 Aimbot - Fps - Aim Range - Aim Position - Bunny Hop (slide jump) - Unlimited Ammo - Auto Reload - No Recoil - Change Background - Adblock
 </br></br>
-<b>Feel Free to DM to me https://instagram.com/aecicekdagi about issues.</br>
-You can also follow me.</b>
+<b>Feel Free to DM to me https://instagram.com/aecicekdagi about issues.</b></br>
+You can also follow me.</br>
 </br>
 <b>How To Fix Script Detected?</b>
 https://www.youtube.com/watch?v=HjwhMNDTlZA
